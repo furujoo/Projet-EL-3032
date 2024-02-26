@@ -4,4 +4,8 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
+int fonction2 ()
+{
+    int m = 2;
+}
 
