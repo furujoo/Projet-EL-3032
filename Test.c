@@ -1,6 +1,7 @@
 int main(int argc, char const *argv[])
 {
     /* code */
+    int test = 0;
     return 0;
 }
 
