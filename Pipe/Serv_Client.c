@@ -17,55 +17,6 @@ int main()
     char buffer[BUFFER_SIZE];
 
 
-    ////Création du pipe nommé Client-ServeurRoutage////
-
-    int result = mkfifo(CLIENT_TUBE, 0777);
-    if (result != 0) {
-        printf("Ne peut créé ’%s’\n", CLIENT_TUBE);
-        return 0;
-    }
-
-    // Creation du second pipe nommé
-    result = mkfifo(CLIENT_TUBE, 0777);
-    if (result != 0) {
-        printf("Ne peut créé ’%s’\n", CLIENT_TUBE);
-        return 0;
-    }
-    // Ouverture en lecture du premier pipe
-    int fd_in = open(SERV_ROUT_TUBE, O_RDONLY);
-    if (fd_in == -1) {
-        printf("Ne peut ouvrir ’%s’\n", SERV_ROUT_TUBE);
-        return 0;
-    }
-
-
-    // Lecture bloquante sur le premier pipe
-    result = read(fd_in, buffer, BUFFER_SIZE);
-    if (result < 0) {
-        printf("Ne peut lire ’%s’\n", SERV_ROUT_TUBE);
-        return 0;
-    }
-
-
-    printf("Reçu: ’%s’\n", buffer);
-
-
-    // Ouverture en écriture du second pipe
-    int fd_out = open(CLIENT_TUBE, O_WRONLY);
-    if (fd_out == -1) {
-        printf("Ne peut ouvrir ’%s’\n", CLIENT_TUBE);
-        return 0;
-    }
-    // Écriture sur le second pipe
-    result = write(fd_out, buffer, result);
-    if (result < 0) {
-        printf("Ne peut écrire ’%s’\n", CLIENT_TUBE);
-        return 0;
-    }
-
-
-
-
     ////Création du pipe nommé ServeurRoutage-Client////
 
 // Creation du premier pipe nommé
@@ -107,10 +58,6 @@ int main()
         printf("Ne peut écrire ’%s’\n", SERV_ROUT_TUBE);
         return 0;
     }
-
-
-
-
 
 
 
