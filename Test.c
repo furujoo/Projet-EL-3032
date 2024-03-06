@@ -4,9 +4,7 @@
 #include <stdio.h> // for printf
 #include <sys/stat.h> // for mkfifo
 #include <unistd.h> // for read, write
-#include <iostream>
 
-using namespace std;
 
 #define BUFFER_SIZE 256
 
@@ -16,13 +14,7 @@ using namespace std;
 
 int main()
 {
-
-    string message;
-    cout << "Veuillez entrer votre message\n";
-
-    cin >> message;
-
-
+    char buffer[BUFFER_SIZE];
 
 
     ////Création du pipe nommé Client-ServeurRoutage////
