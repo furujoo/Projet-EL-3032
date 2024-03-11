@@ -11,6 +11,15 @@
 
 #define CLIENT_SERV_TUBE "clientserv.tube"
 
+void PipeClientServ(Pipe pipe){
+
+    pipe_init(&pipe,"client.pipe" , "serv.pipe" );
+    char *toto = pipe_format(&pipe);
+    printf( "  %s \n", toto);
+    //pipe_write(CLIENT_SERV_TUBE, 'Ping');
+    free(toto);
+}
+
 
 int main()
 {
@@ -20,13 +29,17 @@ int main()
     char CodeServ[4];
     char CodeLieu[4];
     char CodeMenu[4];
+
     
 
     scanf("%s",CodeServ);
     scanf("%s",CodeLieu);
     scanf("%s",CodeMenu);
 
-    char message= '|'+CodeServ+'|'+ CodeLieu +'|'+CodeMenu+'|'; 
+   // char message= '|'+CodeServ+'|'+ CodeLieu +'|'+CodeMenu+'|'; 
+
+
+    PipeClientServ(p);
 
     //printf("|%s|%s|%s|",CodeServ,CodeLieu,CodeMenu);
 
@@ -34,10 +47,7 @@ int main()
     
 
     //test
-    pipe_init(&p,"client.pipe" , "serv.pipe" );
-    char *toto = pipe_format(&p);
-    printf( "  %s \n", toto);
-    //pipe_write(CLIENT_SERV_TUBE, 'Ping');
+   
     
-   free(toto);
+   
 }
