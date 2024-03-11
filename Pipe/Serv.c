@@ -18,6 +18,8 @@ int main()
     //char buffer[BUFFER_SIZE];
     Pipe p;
 
+    FILE *Serv = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeServer.txt", "r");
+
     //test
     pipe_init(&p,"serv.pipe" , "client.pipe" );
     char *toto = pipe_format(&p);
