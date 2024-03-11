@@ -11,20 +11,50 @@
 
 #define CLIENT_SERV_TUBE "clientserv.tube"
 
+void PipeServDoRout(Pipe pipe){
+
+    pipe_init(&pipe,"serv.pipe" , "servRout.pipe" );
+    char *toto = pipe_format(&pipe);
+    printf( "  %s \n", toto);
+    //pipe_write("serv.pipe", 'Ping');
+     free(toto);
+}
+
+void PipeServClient(Pipe pipe){
+
+    pipe_init(&pipe,"serv.pipe" , "client.pipe" );
+    char *toto = pipe_format(&pipe);
+    printf( "  %s \n", toto);
+    //pipe_write("serv.pipe", 'Ping');
+     free(toto);
+}
+
+
 
 
 int main()
 {
-    //char buffer[BUFFER_SIZE];
-    Pipe p;
+    char buffer[BUFFER_SIZE];
+    Pipe pSR;
+    Pipe pSC;
 
     FILE *Serv = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeServer.txt", "r");
 
+
+    PipeServDoRout(pSR);
+    PipeServClient(pSC);
+
+    while(1){
+        pipe_read(&p, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+
+
+    }
+
     //test
-    pipe_init(&p,"serv.pipe" , "client.pipe" );
-    char *toto = pipe_format(&p);
-    printf( "  %s \n", toto);
-    //pipe_write(CLIENT_SERV_TUBE, 'Ping');
+    //pipe_init(&p,"serv.pipe" , "client.pipe" );
+    //char *toto = pipe_format(&p);
+    //printf( "  %s \n", toto);
+    //pipe_write(CLIENT_SERV_TUBE, );
     
-   free(toto);
+  
 }
