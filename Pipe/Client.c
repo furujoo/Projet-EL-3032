@@ -12,11 +12,24 @@
 #define CLIENT_SERV_TUBE "clientserv.tube"
 
 
-
 int main()
 {
     //char buffer[BUFFER_SIZE];
     Pipe p;
+    int t; 
+    char CodeServ[3];
+    char CodeLieu[3];
+    char CodeMenu[3];
+    
+
+    scanf("Veuillez saisir le code du Serveur :%s",CodeServ);
+    scanf("Veuillez saisir le code du Lieu :%s",CodeLieu);
+    scanf("Veuillez saisir le code du Menu :%s",CodeMenu);
+
+    //printf("|%s|%s|%s|",CodeServ,CodeLieu,CodeMenu);
+
+    
+    
 
     //test
     pipe_init(&p,"client.pipe" , "serv.pipe" );
