@@ -16,7 +16,6 @@ int main()
 {
     //char buffer[BUFFER_SIZE];
     Pipe p;
-    int t; 
     char CodeServ[3];
     char CodeLieu[3];
     char CodeMenu[3];
@@ -37,5 +36,5 @@ int main()
     printf( "  %s \n", toto);
     //pipe_write(CLIENT_SERV_TUBE, 'Ping');
     
-   free(toto);
+    free(toto);
 }
