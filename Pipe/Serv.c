@@ -9,25 +9,18 @@
 
 #define BUFFER_SIZE 256
 
-#define CLIENT_SERV_TUBE "clientserv.tube"
+//#define CLIENT_SERV_TUBE "clientserv.tube"
 
 void PipeServDoRout(Pipe pipe){
 
-    pipe_init(&pipe,"serv.pipe" , "servRout.pipe" );
+    pipe_init(&pipe,"serv.pipe" , "servR.pipe" );
     char *toto = pipe_format(&pipe);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
      free(toto);
 }
 
-void PipeServClient(Pipe pipe){
 
-    pipe_init(&pipe,"serv.pipe" , "client.pipe" );
-    char *toto = pipe_format(&pipe);
-    printf( "  %s \n", toto);
-    //pipe_write("serv.pipe", 'Ping');
-     free(toto);
-}
 
 
 
@@ -36,17 +29,17 @@ int main()
 {
     char buffer[BUFFER_SIZE];
     Pipe pSR;
-    Pipe pSC;
+    
 
     FILE *Serv = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeServer.txt", "r");
 
 
     PipeServDoRout(pSR);
-    PipeServClient(pSC);
+    //PipeServClient(pSC);
 
     while(1){
-        pipe_read(&p, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
-
+        pipe_read(&pSR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+        printf("Données lu :%s \n", buffer);
 
     }
 

@@ -9,25 +9,47 @@
 
 #define BUFFER_SIZE 256
 
-#define CLIENT_SERV_TUBE "clientserv.tube"
+//#define CLIENT_SERV_TUBE "clientserv.tube"
 
 void PipeServRoutD(Pipe pipe){
 
-    pipe_init(&pipe,"serv.pipe" , "client.pipe" );
+    pipe_init(&pipe,"servR.pipe" , "serv.pipe" );
     char *toto = pipe_format(&pipe);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
      free(toto);
 }
 
+
+void PipeServRClient(Pipe pipe){
+
+    pipe_init(&pipe,"servR.pipe" , "client.pipe" );
+    char *toto = pipe_format(&pipe);
+    printf( "  %s \n", toto);
+    //pipe_write("serv.pipe", 'Ping');
+     free(toto);
+}
+
+
 int main()
 {
-    //char buffer[BUFFER_SIZE];
-    Pipe p;
+    char buffer[BUFFER_SIZE];
+    //char message;
+    Pipe pServRClient;
+    Pipe pServRD;
 
+    PipeServRoutd(pServRD);
+    PipeServRClient(pServRClient);
+
+    while(1){
+        pipe_read(&pServRClient,buffer,BUFFER_SIZE);
+        pipe_write(&pServRD,buffer);
+
+    }
+    
     
 
-   PipeServRoutd(p);
+   
     
    
 }
