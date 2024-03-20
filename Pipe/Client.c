@@ -66,7 +66,10 @@ int main()
         if(typeR == 'D'){
             printf("|%c|%c|%c|%c|| \n", typeR,CodeServ,CodeLieu,CodeMenu);
         }
-        else if(type)
+        else if(typeR == 'R'){
+
+            
+        }
 
 
 
