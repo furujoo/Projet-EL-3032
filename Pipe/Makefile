@@ -1,6 +1,11 @@
-.PHONY: all clean format
-
 ## CONSTANTS
+CC = gcc
+CFLAGS = -g -Wall
+CCFLAGS = $(CC) $(CFLAGS)
+EXEC = pipes
+
+SRC_PIPES = $(wildcard *.c)
+OBJ_PIPES = $(SRC_PIPES:.c=.o) 
 
 #OBJECTS_BASE = $(notdir $(basename $(wildcard Pipe/*.h)))
 
@@ -9,18 +14,24 @@
 ##format: $(wildcard Pipe/*.c) $(wildcard Pipe/*.h)
 ##	clang-format -i $^
 
-clean: 
-	rm -f *.o
-	rm -f *.pipe
+
 
 ##tests: $(foreach i, $(OBJECTS_BASE), $(i).test)
 
-Pipe: Client.o Serv.o pipe.o log.o 
-	gcc -Wall -o $@ $^
+all: pipes
+
+pipes: $(OBJ_PIPES)
+	$(CCFLAGS) -o $@ $^
 
 %.o: %.c
-	gcc -Wall -o $@ -c $< 
+	$(CCFLAGS) -o $@ -c $< 
 
+
+.PHONY: clean
+
+clean: 
+	rm -f *.o
+	rm -f *.pipe
 
 ##FORCE:
 ##%.test: tests/% 

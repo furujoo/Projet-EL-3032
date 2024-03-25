@@ -9,27 +9,16 @@
 
 #define BUFFER_SIZE 256
 
-//#define CLIENT_SERV_TUBE "clientserv.tube"
+#define CLIENT_SERV_TUBE "clientserv.tube"
 
 void PipeServRoutD(Pipe pipe){
 
-    pipe_init(&pipe,"servR.pipe" , "serv.pipe" );
+    pipe_init(&pipe,"serv.pipe" , "client.pipe" );
     char *toto = pipe_format(&pipe);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
-     free(toto);
+    free(toto);
 }
-
-
-void PipeServRClient(Pipe pipe){
-
-    pipe_init(&pipe,"servR.pipe" , "client.pipe" );
-    char *toto = pipe_format(&pipe);
-    printf( "  %s \n", toto);
-    //pipe_write("serv.pipe", 'Ping');
-     free(toto);
-}
-
 
 int main()
 {
@@ -47,9 +36,12 @@ int main()
 
     }
     
+    char FileConfigPath[] = "/workspaces/Projet-EL-3032/Serveur de routage/FichierRoutage.txt";
+    char ListeServPath[] = "/workspaces/Projet-EL-3032/Base de donnée/ListeServer.txt";
+
     
 
-   
+    PipeServRoutd(p);
     
-   
+    
 }
