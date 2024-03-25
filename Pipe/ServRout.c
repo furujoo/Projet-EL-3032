@@ -13,7 +13,7 @@
 
 void PipeServRoutD(Pipe pipe){
 
-    pipe_init(&pipe,"servR.pipe" , "servD.pipe" );
+    pipe_init(&pipe,"servDR.pipe" , "servD.pipe" );
     char *toto = pipe_format(&pipe);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
@@ -22,7 +22,7 @@ void PipeServRoutD(Pipe pipe){
 
 void PipeServRClient(Pipe pipe){
 
-    pipe_init(&pipe,"servR.pipe" , "client.pipe" );
+    pipe_init(&pipe,"servCR.pipe" , "client.pipe" );
     char *toto = pipe_format(&pipe);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
@@ -33,29 +33,39 @@ int main()
 {
     char buffer[BUFFER_SIZE];
     //char message;
-    Pipe pServRClient;
-    Pipe pServRD;
+    Pipe pServRClient, pServRD;
 
-    PipeServRoutd(pServRD);
+    PipeServRoutD(pServRD);
     PipeServRClient(pServRClient);
 
-    while(1){
-        int result = pipe_read(&pServRD,buffer,BUFFER_SIZE);
+    FILE* RoutageF = fopen ( "FichierRoutage.txt", "r+" );
 
-        if( result >0){
-            printf("Données lu (%d) :%s \n",result, buffer);
+    if (RoutageF == NULL) {
+        perror("Error opening FichierRoutage.txt");
+        exit(EXIT_FAILURE);
+    }
+
+       while (1) {
+        // Read from servCR.pipe
+        int result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
+
+        if (result > 0) {
+            printf("Data read (%d bytes): %s\n", result, buffer);
+
+            // Write to FichierRoutage.txt
+            if (fwrite(buffer, 1, result, RoutageF) != result) {
+                perror("Error writing to FichierRoutage.txt");
+                exit(EXIT_FAILURE);
+            }
+
+            // Write to servRD.pipe
+            if (pipe_write(&pServRD, buffer) == -1) {
+                perror("Error writing to servRD.pipe");
+                exit(EXIT_FAILURE);
+            }
         }
-
-        //pipe_write(&pServRD,buffer);
-
     }
     
-    char FileConfigPath[] = "/workspaces/Projet-EL-3032/Serveur de routage/FichierRoutage.txt";
-    char ListeServPath[] = "/workspaces/Projet-EL-3032/Base de donnée/ListeServer.txt";
-
-    
-
-    //PipeServRoutd(p);
-    
+    int fclose (FILE* RoutageF);
     
 }

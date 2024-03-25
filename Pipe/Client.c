@@ -57,7 +57,7 @@ int main()
             printf("Requete \n");
         }
         else if(typeR == 'E'){
-            pritnf("Erreur \n");
+            printf("Erreur \n");
         }
         else{
             printf("Requetes inconnu \n");
