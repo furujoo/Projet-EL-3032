@@ -13,7 +13,16 @@
 
 void PipeServRoutD(Pipe pipe){
 
-    pipe_init(&pipe,"serv.pipe" , "client.pipe" );
+    pipe_init(&pipe,"servR.pipe" , "servD.pipe" );
+    char *toto = pipe_format(&pipe);
+    printf( "  %s \n", toto);
+    //pipe_write("serv.pipe", 'Ping');
+    free(toto);
+}
+
+void PipeServRClient(Pipe pipe){
+
+    pipe_init(&pipe,"servR.pipe" , "client.pipe" );
     char *toto = pipe_format(&pipe);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
@@ -31,8 +40,13 @@ int main()
     PipeServRClient(pServRClient);
 
     while(1){
-        pipe_read(&pServRClient,buffer,BUFFER_SIZE);
-        pipe_write(&pServRD,buffer);
+        int result = pipe_read(&pServRD,buffer,BUFFER_SIZE);
+
+        if( result >0){
+            printf("Données lu (%d) :%s \n",result, buffer);
+        }
+
+        //pipe_write(&pServRD,buffer);
 
     }
     
@@ -41,7 +55,7 @@ int main()
 
     
 
-    PipeServRoutd(p);
+    //PipeServRoutd(p);
     
     
 }

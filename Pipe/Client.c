@@ -11,7 +11,7 @@
 
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
-void PipeClientServ(Pipe pipe){
+void PipeClientServR(Pipe pipe){
 
     pipe_init(&pipe,"client.pipe" , "servR.pipe" );
     char *toto = pipe_format(&pipe);
@@ -24,14 +24,14 @@ void PipeClientServ(Pipe pipe){
 int main()
 {
     char buffer[BUFFER_SIZE];
-    Pipe p;
+    Pipe pClientServR;
     
     char CodeServ[4];
     char CodeLieu[4];
     char CodeMenu[4];
 
     char messageClient="Ping"; 
-    PipeClientServ(p);
+    PipeClientServR(pClientServR);
 
 
     scanf("%s",CodeServ);
@@ -43,10 +43,11 @@ int main()
    
 
     while(1){
-        char typeR, code;
+        char typeR, code,erreur;
 
         sscanf(buffer,"%c|%4c|%4c|%4c|%249[^|]\n", &typeR,&CodeServ, &CodeLieu,&CodeMenu,  code);  //249[^|] : 	Une donnée de type chaîne de caractères, constituée de tous caractères sauf les caractères spécifiés.
-        pipe_write(&p,messageClient);
+       
+        //pipe_write(&pClientServR,messageClient);
 
 
         if(typeR == 'D'){
@@ -67,11 +68,19 @@ int main()
             printf("|%c|%c|%c|%c|| \n", typeR,CodeServ,CodeLieu,CodeMenu);
         }
         else if(typeR == 'R'){
-
-            
+            printf("|%c|%c|%c|%c|%c| \n", typeR,CodeServ,CodeLieu,CodeMenu,code);
+        }
+        else if(typeR == 'E'){
+            printf("|%c|%c|%c|%c|%c| \n", typeR,CodeServ,CodeLieu,CodeMenu,erreur);
         }
 
 
+        int result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+        if( result >0){
+            printf("Données lu (%d) :%s \n",result, buffer);
+        }
+       
+       usleep(1000);
 
 
     }

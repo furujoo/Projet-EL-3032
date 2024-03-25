@@ -8,17 +8,14 @@
 #include "pipe.h"
 
 #define BUFFER_SIZE 256
+#define TAILLE_MAX 1000
 
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
-void PipeServDoRout(Pipe pipe){
+//void PipeServDoRout(Pipe pipe){
 
-    pipe_init(&pipe,"serv.pipe" , "servR.pipe" );
-    char *toto = pipe_format(&pipe);
-    printf( "  %s \n", toto);
-    //pipe_write("serv.pipe", 'Ping');
-     free(toto);
-}
+   
+//}
 
 
 
@@ -27,19 +24,38 @@ void PipeServDoRout(Pipe pipe){
 
 int main()
 {
-    char buffer[BUFFER_SIZE];
-    Pipe pSR;
+    char buffer[BUFFER_SIZE]="";
+    char chaine[TAILLE_MAX]="";
+    Pipe pServDR;
     
 
     FILE *Serv = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeServer.txt", "r");
 
 
-    PipeServDoRout(pSR);
+
+    //Initialisation du pipe 
+
+    pipe_init(&pServDR,"servD.pipe" , "servR.pipe" );
+    char *toto = pipe_format(&pServDR);
+    printf( "  %s \n", toto);
+    
+     
+
+    //PipeServDoRout(pSR);
     //PipeServClient(pSC);
 
     while(1){
-        pipe_read(&pSR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
-        printf("Données lu :%s \n", buffer);
+        int result = pipe_read(&pServDR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+        if( result >0){
+            printf("Données lu (%d) :%s \n",result, buffer);
+        }
+        
+        fgets
+       
+       usleep(1000);
+
+        
+        
 
     }
 
@@ -49,5 +65,5 @@ int main()
     //printf( "  %s \n", toto);
     //pipe_write(CLIENT_SERV_TUBE, );
     
-  
+    free(toto);
 }
