@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
 
 ////TO DO PLUSIEURS APPLICATIONS CLIENTES : EN GROS TU CHANGES DANS LE PIPE INIT CLIENT.PIPE PAR CLIENT1.PIPE
     
-    //test
+    //testfvnfgngfh
     char buffer[BUFFER_SIZE];
     Pipe pClientServR;
     
