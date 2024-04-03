@@ -21,57 +21,72 @@ void PipeClientServR(Pipe pipe){
 }
 
 
-int main()
+int main(int argc, char *argv[])
 {
+
+    
+    
     char buffer[BUFFER_SIZE];
     Pipe pClientServR;
     
-    char CodeServ[4];
-    char CodeLieu[4];
-    char CodeMenu[4];
+    
 
-    char messageClient="Ping"; 
+    
+
+    
     PipeClientServR(pClientServR);
 
 
-    scanf("%s",CodeServ);
-    scanf("%s",CodeLieu);
-    scanf("%s",CodeMenu);
+    //scanf("%s",CodeServ);
+    //scanf("%s",CodeLieu);
+    //scanf("%s",CodeMenu);
 
    // char message= '|'+CodeServ+'|'+ CodeLieu +'|'+CodeMenu+'|'; 
 
    
 
     while(1){
-        char typeR, code,erreur;
 
-        sscanf(buffer,"%c|%4c|%4c|%4c|%249[^|]\n", &typeR,&CodeServ, &CodeLieu,&CodeMenu,  code);  //249[^|] : 	Une donnée de type chaîne de caractères, constituée de tous caractères sauf les caractères spécifiés.
+        char* typeR    = argv[1];
+        char* CodeServ = argv[2];
+        char* CodeLieu = argv[3];
+        char* CodeMenu = argv[4];
+        char* erreur= NULL;
+        char* message= NULL;
+        if (argc == 6){
+            message = argv[5]; //TODO :verifier si y'a pas de caractere invalide genre |
+        }
+
+        //sscanf(buffer,"%c|%4c|%4c|%4c|%250[^|]\n", &typeR,&CodeServ, &CodeLieu,&CodeMenu,  code);  //249[^|] : 	Une donnée de type chaîne de caractères, constituée de tous caractères sauf les caractères spécifiés.
        
         //pipe_write(&pClientServR,messageClient);
 
 
-        if(typeR == 'D'){
-            printf("Demande \n");
+        //if(typeR == 'D'){
+          //  printf("Demande \n");
+        //}
+        //else if(typeR == 'R'){
+          //  printf("Reponse \n");
+        //}
+        //else if(typeR == 'E'){
+         //   printf("Erreur \n");
+        //}
+        //else{
+            
+        //}
+
+
+        if(typeR[0] == 'D'){
+            printf("|%c|%d|%d|%d|| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu));
         }
-        else if(typeR == 'R'){
-            printf("Requete \n");
+        else if(typeR[0] == 'R'){
+            printf("|%c|%d|%d|%d|%s| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu),message);
         }
-        else if(typeR == 'E'){
-            printf("Erreur \n");
+        else if(typeR[0] == 'E'){
+            printf("|%c|%d|%d|%d|%s| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu),erreur);
         }
         else{
-            printf("Requetes inconnu \n");
-        }
-
-
-        if(typeR == 'D'){
-            printf("|%c|%c|%c|%c|| \n", typeR,CodeServ,CodeLieu,CodeMenu);
-        }
-        else if(typeR == 'R'){
-            printf("|%c|%c|%c|%c|%c| \n", typeR,CodeServ,CodeLieu,CodeMenu,code);
-        }
-        else if(typeR == 'E'){
-            printf("|%c|%c|%c|%c|%c| \n", typeR,CodeServ,CodeLieu,CodeMenu,erreur);
+            printf("Requete inconnue \n");
         }
 
 

@@ -8,7 +8,7 @@
 #include "pipe.h"
 
 #define BUFFER_SIZE 256
-#define TAILLE_MAX 1000
+#define TAILLE_MAX 2000
 
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
@@ -24,12 +24,12 @@
 
 int main()
 {
-    char buffer[BUFFER_SIZE]="";
-    char chaine[TAILLE_MAX]="";
+    char buffer[BUFFER_SIZE];
+    char chaine[TAILLE_MAX];
     Pipe pServDR;
     
 
-    FILE *Serv = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeServer.txt", "r");
+    FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
 
 
 
@@ -38,8 +38,23 @@ int main()
     pipe_init(&pServDR,"servD.pipe" , "servR.pipe" );
     char *toto = pipe_format(&pServDR);
     printf( "  %s \n", toto);
-    
+    free(toto);
      
+
+     
+    if(ListeLieux == NULL) {
+        printf("ERREUR : Impossible d'ouvrir le fichier");
+        //return 1;
+    }
+    
+    while(fgets(chaine, TAILLE_MAX, ListeLieux) != NULL){
+        printf("%s \n", chaine);
+    }
+        
+    fclose(ListeLieux);
+    
+
+    
 
     //PipeServDoRout(pSR);
     //PipeServClient(pSC);
@@ -49,13 +64,10 @@ int main()
         if( result >0){
             printf("Données lu (%d) :%s \n",result, buffer);
         }
-        
-        fgets
-       
-       usleep(1000);
 
         
-        
+       
+       usleep(1000);
 
     }
 
@@ -65,5 +77,5 @@ int main()
     //printf( "  %s \n", toto);
     //pipe_write(CLIENT_SERV_TUBE, );
     
-    free(toto);
+    
 }
