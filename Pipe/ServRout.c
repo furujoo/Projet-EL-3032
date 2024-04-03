@@ -38,34 +38,41 @@ int main()
     PipeServRoutD(pServRD);
     PipeServRClient(pServRClient);
 
-    FILE* RoutageF = fopen ( "FichierRoutage.txt", "r+" );
-        
-        if (RoutageF == NULL) {
-        perror("Error opening FichierRoutage.txt");
-        exit(EXIT_FAILURE);
-    }
+    //FILE* RoutageF = fopen ( "FichierRoutage.txt", "r+" );
 
-while (1) {
-        // Read from servCR.pipe
-        int result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
-        
-        if (result > 0) {
-            printf("Data read (%d bytes): %s\n", result, buffer);
+    int result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
+    printf("Data read (%d bytes): %s\n", result, buffer);
 
-            // Write to FichierRoutage.txt
-            if (fwrite(buffer, 1, result, RoutageF) != result) {
-                perror("Error writing to FichierRoutage.txt");
-                exit(EXIT_FAILURE);
-            }
+    //if (RoutageF == NULL) {
+    //    perror("Error opening FichierRoutage.txt");
+    //    exit(EXIT_FAILURE);
+    //}
 
-            // Write to servRD.pipe
-            if (pipe_write(&pServRD, buffer) == -1) {
-                perror("Error writing to servRD.pipe");
-                exit(EXIT_FAILURE);
-            }
-        }
-    }
-    
-    int fclose (FILE* RoutageF);
-    
+    //while (1) {
+    // Read from servR.pipe
+    //int result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
+
+    //if (result > 0) {
+     //   printf("Data read (%d bytes): %s\n", result, buffer);
+
+        // Write to FichierRoutage.txt
+    ///    if (fwrite(buffer, 1, result, RoutageF) != result) {
+    ///        perror("Error writing to FichierRoutage.txt");
+    //        exit(EXIT_FAILURE);
+      //  }
+
+     //   exit(EXIT_FAILURE);
+
+        // Write to servRD.pipe
+        //if (pipe_write(&pServRD, buffer) == -1) {
+        //    perror("Error writing to servRD.pipe");
+        //    exit(EXIT_FAILURE);
+        //}
+    //}
+
+    //int fclose (FILE* RoutageF);
+
 }
+    
+    
+    
