@@ -13,7 +13,7 @@
 
 void PipeServRoutD(Pipe pipe){
 
-    pipe_init(&pipe,"servDR.pipe" , "servD.pipe" );
+    pipe_init(&pipe,"servR.pipe" , "servD.pipe" );
     char *toto = pipe_format(&pipe);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
@@ -22,7 +22,7 @@ void PipeServRoutD(Pipe pipe){
 
 void PipeServRClient(Pipe pipe){
 
-    pipe_init(&pipe,"servCR.pipe" , "client.pipe" );
+    pipe_init(&pipe,"servR.pipe" , "client.pipe" );
     char *toto = pipe_format(&pipe);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
@@ -39,16 +39,16 @@ int main()
     PipeServRClient(pServRClient);
 
     FILE* RoutageF = fopen ( "FichierRoutage.txt", "r+" );
-
-    if (RoutageF == NULL) {
+        
+        if (RoutageF == NULL) {
         perror("Error opening FichierRoutage.txt");
         exit(EXIT_FAILURE);
     }
 
-       while (1) {
+while (1) {
         // Read from servCR.pipe
         int result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
-
+        
         if (result > 0) {
             printf("Data read (%d bytes): %s\n", result, buffer);
 
