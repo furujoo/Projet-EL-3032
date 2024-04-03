@@ -21,9 +21,10 @@ void PipeClientServR(Pipe pipe){
 }
 
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms des pipe dans le pipe init par les argv 
 {
 
+////TO DO PLUSIEURS APPLICATIONS CLIENTES : EN GROS TU CHANGES DANS LE PIPE INIT CLIENT.PIPE PAR CLIENT1.PIPE
     
     
     char buffer[BUFFER_SIZE];
@@ -62,6 +63,23 @@ int main(int argc, char *argv[])
         //pipe_write(&pClientServR,messageClient);
 
 
+
+        ////ECRIRE SUR LE PIPE
+
+        pipe_open_write(&pClientServR);
+        pipe_write(&pClientServR,CodeServ);
+        pipe_free(&pClientServR);
+
+        /////Lire sur le PIPE
+
+        int result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+        if( result >0){
+            printf("Données lu (%d) :%s \n",result, buffer);
+        }
+
+
+
+
         //if(typeR == 'D'){
           //  printf("Demande \n");
         //}
@@ -90,10 +108,10 @@ int main(int argc, char *argv[])
         }
 
 
-        int result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
-        if( result >0){
-            printf("Données lu (%d) :%s \n",result, buffer);
-        }
+        //int result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+        //if( result >0){
+        //    printf("Données lu (%d) :%s \n",result, buffer);
+        //}
        
        usleep(1000);
 

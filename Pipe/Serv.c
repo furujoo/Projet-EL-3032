@@ -59,13 +59,21 @@ int main()
     //PipeServDoRout(pSR);
     //PipeServClient(pSC);
 
+    
+
     while(1){
+        char reponse;
+
+        //LE SERVEUR LIT LA SORTIE DU PIPE ENTRE LE SERV DE DONNEE ET LE SERV DE ROUTAGE
         int result = pipe_read(&pServDR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
         if( result >0){
             printf("Données lu (%d) :%s \n",result, buffer);
         }
 
-        
+        //LE SERVEUR ENVOIE SA REPONSE AU SERVEUR DE ROUTAGE
+        pipe_open_write(&pServDR);
+        pipe_write(&pServDR, reponse);
+        pipe_free(&pServDR);
        
        usleep(1000);
 
