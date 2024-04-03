@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
 
 ////TO DO PLUSIEURS APPLICATIONS CLIENTES : EN GROS TU CHANGES DANS LE PIPE INIT CLIENT.PIPE PAR CLIENT1.PIPE
     
-    
+    //test
     char buffer[BUFFER_SIZE];
     Pipe pClientServR;
     
@@ -62,6 +62,18 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
        
         //pipe_write(&pClientServR,messageClient);
 
+        if(typeR[0] == 'D'){
+            printf("|%c|%d|%d|%d|| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu));
+        }
+        else if(typeR[0] == 'R'){
+            printf("|%c|%d|%d|%d|%s| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu),message);
+        }
+        else if(typeR[0] == 'E'){
+            printf("|%c|%d|%d|%d|%s| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu),erreur);
+        }
+        else{
+            printf("Requete inconnue \n");
+        }
 
 
         ////ECRIRE SUR LE PIPE
@@ -94,18 +106,7 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
         //}
 
 
-        if(typeR[0] == 'D'){
-            printf("|%c|%d|%d|%d|| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu));
-        }
-        else if(typeR[0] == 'R'){
-            printf("|%c|%d|%d|%d|%s| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu),message);
-        }
-        else if(typeR[0] == 'E'){
-            printf("|%c|%d|%d|%d|%s| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu),erreur);
-        }
-        else{
-            printf("Requete inconnue \n");
-        }
+        
 
 
         //int result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
