@@ -11,13 +11,10 @@
 
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
-void PipeClientServR(Pipe pipe){
+void PipeClientServR(Pipe *pipe){
 
-    pipe_init(&pipe,"client.pipe" , "servR.pipe" );
-    char *toto = pipe_format(&pipe);
-    printf( "  %s \n", toto);
-    //pipe_write(CLIENT_SERV_TUBE, 'Ping');
-    free(toto);
+    pipe_init(pipe,"client.pipe" , "servR.pipe" );
+    
 }
 
 
@@ -35,7 +32,13 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
     
 
     
-    PipeClientServR(pClientServR);
+
+    PipeClientServR(&pClientServR);
+
+    char *toto = pipe_format(&pClientServR);
+    printf( "  %s \n", toto);
+    //pipe_write(CLIENT_SERV_TUBE, 'Ping');
+    free(toto);
 
 
     //scanf("%s",CodeServ);
@@ -84,12 +87,16 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
 
         /////Lire sur le PIPE
 
-        int result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
-        if( result >0){
-            printf("Données lu (%d) :%s \n",result, buffer);
+        ///// UTILISER 2 TERMINAUX UN POUR CLIENT ET L'AUTRE POUR SERVROUT QD ON TEST LES PIPE //////
+
+        int result =0;
+        
+        while( result==0){
+            
+            result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
         }
 
-
+        printf("Données lu (%d) :%s \n",result, buffer);
 
 
         //if(typeR == 'D'){

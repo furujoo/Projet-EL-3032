@@ -35,7 +35,7 @@ int main()
 
     //Initialisation du pipe 
 
-    pipe_init(&pServDR,"servD.pipe" , "servR.pipe" );
+    pipe_init(&pServDR,"servD.pipe" , "servR1.pipe" );
     char *toto = pipe_format(&pServDR);
     printf( "  %s \n", toto);
     free(toto);

@@ -11,37 +11,54 @@
 
 #define CLIENT_SERV_TUBE "clientserv.tube"
 
-void PipeServRoutD(Pipe pipe){
+void PipeServRoutD(Pipe *pipe){
 
-    pipe_init(&pipe,"servR.pipe" , "servD.pipe" );
-    char *toto = pipe_format(&pipe);
-    printf( "  %s \n", toto);
-    //pipe_write("serv.pipe", 'Ping');
-    free(toto);
+    pipe_init(pipe,"servR1.pipe" , "servD.pipe" );
+    
 }
 
-void PipeServRClient(Pipe pipe){
+void PipeServRClient(Pipe *pipe){
 
-    pipe_init(&pipe,"servR.pipe" , "client.pipe" );
-    char *toto = pipe_format(&pipe);
-    printf( "  %s \n", toto);
-    //pipe_write("serv.pipe", 'Ping');
-    free(toto);
+    pipe_init(pipe,"servR.pipe" , "client.pipe" );
+    
 }
 
-int main()
+int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre plus tard à qui renvoyer les données : si les 3 codes sont les meme forcement la reposne sera la meme pour n'importe quel utilisateur
 {
     char buffer[BUFFER_SIZE];
     //char message;
     Pipe pServRClient, pServRD;
 
-    PipeServRoutD(pServRD);
-    PipeServRClient(pServRClient);
+    PipeServRoutD(&pServRD);
+
+    char *toto = pipe_format(&pServRD);
+    printf( "  %s \n", toto);
+    //pipe_write("serv.pipe", 'Ping');
+    free(toto);
+
+    PipeServRClient(&pServRClient);
+
+    
+
+    toto = pipe_format(&pServRClient);
+    printf( "  %s \n", toto);
+    //pipe_write("serv.pipe", 'Ping');
+    free(toto);
 
     //FILE* RoutageF = fopen ( "FichierRoutage.txt", "r+" );
-
-    int result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
+ 
+    int result =0;
+    printf("test");
+    while(result == 0){
+        
+        result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
+    }
+    
+    //pipe_free(&pServRClient)
     printf("Data read (%d bytes): %s\n", result, buffer);
+    
+    
+    
 
     //if (RoutageF == NULL) {
     //    perror("Error opening FichierRoutage.txt");
