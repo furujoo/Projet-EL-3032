@@ -5,15 +5,18 @@
 #include <sys/stat.h> // for mkfifo
 #include <unistd.h> // for read, write
 #include <stdlib.h>
+#include <string.h>
 #include "pipe.h"
 
 #define BUFFER_SIZE 256
 
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
-void PipeClientServR(Pipe *pipe){
+void PipeClientServR(Pipe *pipe,char NClient){
 
-    pipe_init(pipe,"client.pipe" , "servR.pipe" );
+    char client= strcat("client",NClient);
+
+    pipe_init(pipe,strcat(client,".pipe"), "servR.pipe" );
     
 }
 
@@ -26,14 +29,14 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
     //testfvnfgngfh
     char buffer[BUFFER_SIZE];
     Pipe pClientServR;
-    
-    
-
+    char *NumClient = argv[1];
     
 
     
 
-    PipeClientServR(&pClientServR);
+    
+
+    PipeClientServR(&pClientServR,NumClient);
 
     char *toto = pipe_format(&pClientServR);
     printf( "  %s \n", toto);
@@ -51,14 +54,15 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
 
     while(1){
 
-        char* typeR    = argv[1];
-        char* CodeServ = argv[2];
-        char* CodeLieu = argv[3];
-        char* CodeMenu = argv[4];
+        char* typeR    = argv[2];
+        char* CodeServ = argv[3];
+        char* CodeLieu = argv[4];
+        char* CodeMenu = argv[5];
+        
         char* erreur= NULL;
         char* message= NULL;
-        if (argc == 6){
-            message = argv[5]; //TODO :verifier si y'a pas de caractere invalide genre |
+        if (argc == 7){
+            message = argv[6]; //TODO :verifier si y'a pas de caractere invalide genre |
         }
 
         //sscanf(buffer,"%c|%4c|%4c|%4c|%250[^|]\n", &typeR,&CodeServ, &CodeLieu,&CodeMenu,  code);  //249[^|] : 	Une donnée de type chaîne de caractères, constituée de tous caractères sauf les caractères spécifiés.
