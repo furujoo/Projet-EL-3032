@@ -12,10 +12,9 @@
 
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
-//void PipeServDoRout(Pipe pipe){
-
-   
-//}
+void PipeServDoRout(Pipe *pipe){
+    pipe_init(pipe,"servD.pipe" , "servR1.pipe" );
+}
 
 
 
@@ -24,7 +23,7 @@
 
 int main()
 {
-    char buffer[BUFFER_SIZE];
+    char *buffer[BUFFER_SIZE];
     char chaine[TAILLE_MAX];
     Pipe pServDR;
     
@@ -33,9 +32,9 @@ int main()
 
 
 
-    //Initialisation du pipe 
+    ////Initialisation du pipe////
 
-    pipe_init(&pServDR,"servD.pipe" , "servR1.pipe" );
+    PipeServDoRout(&pServDR);
     char *toto = pipe_format(&pServDR);
     printf( "  %s \n", toto);
     free(toto);
@@ -54,30 +53,35 @@ int main()
     fclose(ListeLieux);
     
 
-    
+    printf("test1 \n");
 
     //PipeServDoRout(pSR);
     //PipeServClient(pSC);
 
-    
-
-    while(1){
-        char reponse;
-
-        //LE SERVEUR LIT LA SORTIE DU PIPE ENTRE LE SERV DE DONNEE ET LE SERV DE ROUTAGE
-        int result = pipe_read(&pServDR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
-        if( result >0){
-            printf("Données lu (%d) :%s \n",result, buffer);
-        }
-
-        //LE SERVEUR ENVOIE SA REPONSE AU SERVEUR DE ROUTAGE
-        pipe_open_write(&pServDR);
-        pipe_write(&pServDR, reponse);
-        pipe_free(&pServDR);
+    int result=0;
+    char *reponse="rien";
+    printf("test2 \n");
+    /////////LE SERVEUR LIT LA SORTIE DU PIPE ENTRE LE SERV DE DONNEE ET LE SERV DE ROUTAGE///////////////////
+    while(result ==0){
        
-       usleep(1000);
-
+        result = pipe_read(&pServDR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+            
     }
+    printf("Données lu (%d) :%s \n",result, buffer);
+
+
+    printf("test3 \n");
+    //////////////////LE SERVEUR ENVOIE SA REPONSE AU SERVEUR DE ROUTAGE////////////////////////////
+
+
+    printf("test4 \n");
+    pipe_open_write(&pServDR);
+    pipe_write(&pServDR, reponse);
+    //pipe_free(&pServDR);
+       
+    //usleep(1000);
+
+}
 
     //test
     //pipe_init(&p,"serv.pipe" , "client.pipe" );
@@ -86,4 +90,3 @@ int main()
     //pipe_write(CLIENT_SERV_TUBE, );
     
     
-}

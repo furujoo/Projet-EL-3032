@@ -83,13 +83,13 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
 
         pipe_open_write(&pClientServR);
         pipe_write(&pClientServR,CodeServ);
-        pipe_free(&pClientServR);
+        //pipe_free(&pClientServR);
 
         /////Lire sur le PIPE
 
         ///// UTILISER 2 TERMINAUX UN POUR CLIENT ET L'AUTRE POUR SERVROUT QD ON TEST LES PIPE //////
 
-        int result =0;
+        int result=0;
         
         while( result==0){
             

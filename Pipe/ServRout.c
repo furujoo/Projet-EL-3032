@@ -36,9 +36,11 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
     //pipe_write("serv.pipe", 'Ping');
     free(toto);
 
+
+
+
     PipeServRClient(&pServRClient);
 
-    
 
     toto = pipe_format(&pServRClient);
     printf( "  %s \n", toto);
@@ -48,7 +50,11 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
     //FILE* RoutageF = fopen ( "FichierRoutage.txt", "r+" );
  
     int result =0;
-    printf("test");
+    int resultServD =0;
+    
+
+//////////Lecture du Pipe entre le client et le Serveur de Routage////////////////////////
+
     while(result == 0){
         
         result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
@@ -58,7 +64,32 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
     printf("Data read (%d bytes): %s\n", result, buffer);
     
     
+///////////Envoie de la demande du Client vers le Serveur de Donnée sur le pipe////////////
+        pipe_open_write(&pServRD);
+        pipe_write(&pServRD,buffer);
+        //pipe_free(&pServRD);   
+
+
+
+//////////Lecture de la reponse du Serveur de donnée sur le pipe///////////////////
+
+
+    while(resultServD == 0){
+        resultServD = pipe_read(&pServRD, buffer, BUFFER_SIZE);
+    }
     
+    //pipe_free(&pServRClient)
+    printf("Data read (%d bytes): %s\n", result, buffer);
+    
+
+
+//////////Envoie de le reponse du Serveur de Donnée au Client ////////////////////
+
+    pipe_open_write(&pServRClient);
+    pipe_write(&pServRClient,buffer);
+    //pipe_free(&pServRClient);  
+
+
 
     //if (RoutageF == NULL) {
     //    perror("Error opening FichierRoutage.txt");
