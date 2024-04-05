@@ -7,12 +7,15 @@ SRC_PIPES = $(wildcard *.c)
 OBJ_PIPES = $(SRC_PIPES:.c=.o) 
 
 
-all: ServRout Client
+all: ServRout Client ServD
 
 ServRout : log.o pipe.o ServRout.c
 	$(CCFLAGS) -o $@ $^ -lm
 
 Client : log.o pipe.o Client.c
+	$(CCFLAGS) -o $@ $^ -lm
+
+ServD : log.o pipe.o Serv.c 
 	$(CCFLAGS) -o $@ $^ -lm
 
 #pipes: $(OBJ_PIPES)
@@ -25,6 +28,6 @@ Client : log.o pipe.o Client.c
 .PHONY: clean
 
 clean: 
-	rm -f *.o ServRout ServDonne Client
+	rm -f *.o ServRout ServDonne Client ServD
 	rm -f *.pipe
 
