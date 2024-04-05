@@ -11,15 +11,27 @@
 
 #define CLIENT_SERV_TUBE "clientserv.tube"
 
-void PipeServRoutD(Pipe *pipe){
+void PipeServRoutD1(Pipe *pipe){
 
-    pipe_init(pipe,"servR1.pipe" , "servD.pipe" );
+    pipe_init(pipe,"servR1.pipe" , "servD1.pipe" );
     
 }
 
-void PipeServRClient(Pipe *pipe){
+void PipeServRoutD2(Pipe *pipe){
 
-    pipe_init(pipe,"servR.pipe" , "client.pipe" );
+    pipe_init(pipe,"servR1.pipe" , "servD2.pipe" );
+    
+}
+
+void PipeServRClient1(Pipe *pipe){
+
+    pipe_init(pipe,"servR.pipe" , "client1.pipe" );
+    
+}
+
+void PipeServRClient2(Pipe *pipe){
+
+    pipe_init(pipe,"servR.pipe" , "client2.pipe" );
     
 }
 
@@ -27,11 +39,18 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
 {
     char buffer[BUFFER_SIZE];
     //char message;
-    Pipe pServRClient, pServRD;
+    Pipe pServRClient1,pServRClient2, pServRD1, pServRD2;
 
-    PipeServRoutD(&pServRD);
+    PipeServRoutD1(&pServRD1);
 
-    char *toto = pipe_format(&pServRD);
+    char *toto = pipe_format(&pServRD1);
+    printf( "  %s \n", toto);
+    //pipe_write("serv.pipe", 'Ping');
+    free(toto);
+
+    PipeServRoutD2(&pServRD2);
+
+    char *toto = pipe_format(&pServRD2);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
     free(toto);
@@ -39,10 +58,17 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
 
 
 
-    PipeServRClient(&pServRClient);
+    PipeServRClient1(&pServRClient1);
+
+    toto = pipe_format(&pServRClient1);
+    printf( "  %s \n", toto);
+    //pipe_write("serv.pipe", 'Ping');
+    free(toto);
 
 
-    toto = pipe_format(&pServRClient);
+    PipeServRClient2(&pServRClient2);
+
+    toto = pipe_format(&pServRClient2);
     printf( "  %s \n", toto);
     //pipe_write("serv.pipe", 'Ping');
     free(toto);
@@ -56,18 +82,31 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
 //////////Lecture du Pipe entre le client et le Serveur de Routage////////////////////////
 
     while(result == 0){
+        result = pipe_read(&pServRClient1, buffer, BUFFER_SIZE);
+        if (result!=0){
+
+            break;
+        }
+        else{
+            result = pipe_read(&pServRClient2, buffer, BUFFER_SIZE);
+        }
         
-        result = pipe_read(&pServRClient, buffer, BUFFER_SIZE);
     }
     
     //pipe_free(&pServRClient)
     printf("Data read (%d bytes): %s\n", result, buffer);
     
     
-///////////Envoie de la demande du Client vers le Serveur de Donnée sur le pipe////////////
-        pipe_open_write(&pServRD);
-        pipe_write(&pServRD,buffer);
+///////////Envoie de la demande du Client vers le Serveur de Donnée 1 sur le pipe////////////
+
+
+        pipe_open_write(&pServRD1);
+        pipe_write(&pServRD1,buffer);
         //pipe_free(&pServRD);   
+
+////////////ECRITURE SUR SERV DE DONNEE 2/////////////
+        pipe_open_write(&pServRD2);
+        pipe_write(&pServRD2,buffer);
 
 
 
@@ -75,7 +114,14 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
 
 
     while(resultServD == 0){
-        resultServD = pipe_read(&pServRD, buffer, BUFFER_SIZE);
+        resultServD = pipe_read(&pServRD1, buffer, BUFFER_SIZE);
+        if (resultServD!=0){
+
+            break;
+        }
+        else{
+            resultServD = pipe_read(&pServRClient2, buffer, BUFFER_SIZE);
+        }
     }
     
     //pipe_free(&pServRClient)
@@ -85,9 +131,12 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
 
 //////////Envoie de le reponse du Serveur de Donnée au Client ////////////////////
 
-    pipe_open_write(&pServRClient);
-    pipe_write(&pServRClient,buffer);
+    pipe_open_write(&pServRClient1);
+    pipe_write(&pServRClient1,buffer);
     //pipe_free(&pServRClient);  
+
+    pipe_open_write(&pServRClient2);
+    pipe_write(&pServRClient2,buffer);
 
 
 

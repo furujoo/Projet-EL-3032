@@ -13,10 +13,12 @@
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
 void PipeServDoRout(Pipe *pipe){
-    pipe_init(pipe,"servD.pipe" , "servR1.pipe" );
+    pipe_init(pipe,"servD1.pipe" , "servR1.pipe" );
 }
 
-
+void PipeServDoRout(Pipe *pipe){
+    pipe_init(pipe,"servD2.pipe" , "servR1.pipe" );
+}
 
 
 
@@ -25,7 +27,7 @@ int main()
 {
     char *buffer[BUFFER_SIZE];
     char chaine[TAILLE_MAX];
-    Pipe pServDR;
+    Pipe pServD1R, pServD2R;
     
 
     FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
@@ -34,8 +36,13 @@ int main()
 
     ////Initialisation du pipe////
 
-    PipeServDoRout(&pServDR);
-    char *toto = pipe_format(&pServDR);
+    PipeServDoRout(&pServD1R);
+    char *toto = pipe_format(&pServD1R);
+    printf( "  %s \n", toto);
+    free(toto);
+
+    PipeServDoRout(&pServD2R);
+    char *toto = pipe_format(&pServD2R);
     printf( "  %s \n", toto);
     free(toto);
      
@@ -63,9 +70,14 @@ int main()
     printf("test2 \n");
     /////////LE SERVEUR LIT LA SORTIE DU PIPE ENTRE LE SERV DE DONNEE ET LE SERV DE ROUTAGE///////////////////
     while(result ==0){
-       
-        result = pipe_read(&pServDR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+        result = pipe_read(&pServD1R, buffer, BUFFER_SIZE);
+        if (result!=0){
             
+            break;
+        }
+        else{
+        result = pipe_read(&pServD2R, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+        }   
     }
     printf("Données lu (%d) :%s \n",result, buffer);
 
@@ -75,9 +87,19 @@ int main()
 
 
     printf("test4 \n");
-    pipe_open_write(&pServDR);
-    pipe_write(&pServDR, reponse);
+
+
+
+    ///////////////////ECRITURE SUR LES PIPE CORRESPONDANT A CONFIGURER////////////////////////////
+
+    //////ECRITURE SUR LE PIPE SERVEUR 1 VERS SERVEUR ROUTAGE/////
+    pipe_open_write(&pServD1R);
+    pipe_write(&pServD1R, reponse);
     //pipe_free(&pServDR);
+
+    //////ECRITURE SUR LE PIPE SERVEUR 2 VERS SERVEUR ROUTAGE/////
+    pipe_open_write(&pServD2R);
+    pipe_write(&pServD2R, reponse);
        
     //usleep(1000);
 

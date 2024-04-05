@@ -12,11 +12,25 @@
 
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
-void PipeClientServR(Pipe *pipe,char NClient){
+void PipeClient1ServR(Pipe *pipe){
 
-    char client= strcat("client",NClient);
+    //char *client= strcat("client",&NClient);
+    //printf("%s",client);
+    //printf("%s",strcat(client,".pipe"));
 
-    pipe_init(pipe,strcat(client,".pipe"), "servR.pipe" );
+
+    pipe_init(pipe,"client1.pipe", "servR.pipe" );
+    
+}
+
+void PipeClient2ServR(Pipe *pipe){
+
+    //char *client= strcat("client",&NClient);
+    //printf("%s",client);
+    //printf("%s",strcat(client,".pipe"));
+
+
+    pipe_init(pipe,"client2.pipe", "servR.pipe" );
     
 }
 
@@ -28,20 +42,34 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
     
     //testfvnfgngfh
     char buffer[BUFFER_SIZE];
-    Pipe pClientServR;
-    char *NumClient = argv[1];
+    Pipe pClient1ServR;
+    Pipe pClient2ServR;
+    char* NumClient = argv[5];
     
 
     
 
     
+    if( atoi(NumClient) == 1){
+        PipeClient1ServR(&pClient1ServR);
+        char *toto = pipe_format(&pClient1ServR);
+        printf( "  %s \n", toto);
+       
+        free(toto);
+    }
+    
+    else if (atoi(NumClient)==2){
+        PipeClient2ServR(&pClient2ServR);
+        char *toto = pipe_format(&pClient2ServR);
+        printf( "  %s \n", toto);
+    
+        free(toto);
+    }
+    
 
-    PipeClientServR(&pClientServR,NumClient);
+    
 
-    char *toto = pipe_format(&pClientServR);
-    printf( "  %s \n", toto);
-    //pipe_write(CLIENT_SERV_TUBE, 'Ping');
-    free(toto);
+    
 
 
     //scanf("%s",CodeServ);
@@ -54,10 +82,10 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
 
     while(1){
 
-        char* typeR    = argv[2];
-        char* CodeServ = argv[3];
-        char* CodeLieu = argv[4];
-        char* CodeMenu = argv[5];
+        char* typeR    = argv[1];
+        char* CodeServ = argv[2];
+        char* CodeLieu = argv[3];
+        char* CodeMenu = argv[4];
         
         char* erreur= NULL;
         char* message= NULL;
@@ -84,46 +112,38 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
 
 
         ////ECRIRE SUR LE PIPE
+        if(atoi(NumClient)==1){
+            pipe_open_write(&pClient1ServR);
+            pipe_write(&pClient1ServR,CodeServ);
+        }
+        else if (atoi(NumClient)==2){
+            pipe_open_write(&pClient2ServR);
+            pipe_write(&pClient2ServR,CodeServ);
 
-        pipe_open_write(&pClientServR);
-        pipe_write(&pClientServR,CodeServ);
+        }
         //pipe_free(&pClientServR);
 
         /////Lire sur le PIPE
 
-        ///// UTILISER 2 TERMINAUX UN POUR CLIENT ET L'AUTRE POUR SERVROUT QD ON TEST LES PIPE //////
 
         int result=0;
         
-        while( result==0){
+        while(result==0){
+            if(atoi(NumClient)==1){
+                result = pipe_read(&pClient1ServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
+            }
+            else if(atoi(NumClient)==2){
+                result = pipe_read(&pClient2ServR, buffer, BUFFER_SIZE);
+            }
             
-            result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
         }
 
         printf("Données lu (%d) :%s \n",result, buffer);
 
 
-        //if(typeR == 'D'){
-          //  printf("Demande \n");
-        //}
-        //else if(typeR == 'R'){
-          //  printf("Reponse \n");
-        //}
-        //else if(typeR == 'E'){
-         //   printf("Erreur \n");
-        //}
-        //else{
-            
-        //}
+      
 
 
-        
-
-
-        //int result = pipe_read(&pClientServR, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
-        //if( result >0){
-        //    printf("Données lu (%d) :%s \n",result, buffer);
-        //}
        
        usleep(1000);
 
