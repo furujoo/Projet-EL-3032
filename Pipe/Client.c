@@ -13,25 +13,11 @@
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
 void PipeClient1ServR(Pipe *pipe){
-
-    //char *client= strcat("client",&NClient);
-    //printf("%s",client);
-    //printf("%s",strcat(client,".pipe"));
-
-
-    pipe_init(pipe,"client1.pipe", "servR.pipe" );
-    
+    pipe_init(pipe,"client1.pipe", "servR.pipe" );  
 }
 
 void PipeClient2ServR(Pipe *pipe){
-
-    //char *client= strcat("client",&NClient);
-    //printf("%s",client);
-    //printf("%s",strcat(client,".pipe"));
-
-
-    pipe_init(pipe,"client2.pipe", "servR.pipe" );
-    
+    pipe_init(pipe,"client2.pipe", "servR.pipe" ); 
 }
 
 
@@ -46,9 +32,6 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
     Pipe pClient2ServR;
     char* NumClient = argv[5];
     
-
-    
-
     
     if( atoi(NumClient) == 1){
         PipeClient1ServR(&pClient1ServR);
@@ -67,18 +50,6 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
     }
     
 
-    
-
-    
-
-
-    //scanf("%s",CodeServ);
-    //scanf("%s",CodeLieu);
-    //scanf("%s",CodeMenu);
-
-   // char message= '|'+CodeServ+'|'+ CodeLieu +'|'+CodeMenu+'|'; 
-
-   
 
     while(1){
 
@@ -110,15 +81,25 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
             printf("Requete inconnue \n");
         }
 
+        //// Variable de la Commande écrite /////
+
+        char Commande[BUFFER_SIZE] = "";
+
+        for (int i = 1; i < argc; i++) {
+            strcat(Commande, argv[i]);
+            if (i < argc - 1) {
+                strcat(Commande, " "); // Ajoute un espace seulement si ce n'est pas le dernier argument
+            }
+        }
 
         ////ECRIRE SUR LE PIPE
         if(atoi(NumClient)==1){
             pipe_open_write(&pClient1ServR);
-            pipe_write(&pClient1ServR,CodeServ);
+            pipe_write(&pClient1ServR,Commande);
         }
         else if (atoi(NumClient)==2){
             pipe_open_write(&pClient2ServR);
-            pipe_write(&pClient2ServR,CodeServ);
+            pipe_write(&pClient2ServR,Commande);
 
         }
         //pipe_free(&pClientServR);
@@ -146,22 +127,9 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
 
        
        usleep(1000);
-
-
-    }
-
         
 
-    
-    
-
-    //printf("|%s|%s|%s|",CodeServ,CodeLieu,CodeMenu);
-
-    
-    
-
-    //test
-   
+    }
     
    
 }

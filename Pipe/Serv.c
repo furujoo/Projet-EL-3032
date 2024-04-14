@@ -12,11 +12,11 @@
 
 //#define CLIENT_SERV_TUBE "clientserv.tube"
 
-void PipeServDoRout(Pipe *pipe){
+void PipeServDoRout1(Pipe *pipe){
     pipe_init(pipe,"servD1.pipe" , "servR1.pipe" );
 }
 
-void PipeServDoRout(Pipe *pipe){
+void PipeServDoRout2(Pipe *pipe){
     pipe_init(pipe,"servD2.pipe" , "servR1.pipe" );
 }
 
@@ -25,33 +25,24 @@ void PipeServDoRout(Pipe *pipe){
 
 int main()
 {
-    char *buffer[BUFFER_SIZE];
-    char chaine[TAILLE_MAX];
-    Pipe pServD1R, pServD2R;
     
-
-    FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
-
-
-
     ////Initialisation du pipe////
+    
+    Pipe pServD1R, pServD2R;
 
-    PipeServDoRout(&pServD1R);
+    PipeServDoRout1(&pServD1R);
     char *toto = pipe_format(&pServD1R);
     printf( "  %s \n", toto);
     free(toto);
 
-    PipeServDoRout(&pServD2R);
-    char *toto = pipe_format(&pServD2R);
+    PipeServDoRout2(&pServD2R);
+    toto = pipe_format(&pServD2R);
     printf( "  %s \n", toto);
     free(toto);
-     
 
-     
-    if(ListeLieux == NULL) {
-        printf("ERREUR : Impossible d'ouvrir le fichier");
-        //return 1;
-    }
+    /*
+
+    FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
     
     while(fgets(chaine, TAILLE_MAX, ListeLieux) != NULL){
         printf("%s \n", chaine);
@@ -59,15 +50,34 @@ int main()
         
     fclose(ListeLieux);
     
+    */
+
+    char buffer[BUFFER_SIZE];
+    char chaine[TAILLE_MAX];
 
     printf("test1 \n");
 
-    //PipeServDoRout(pSR);
-    //PipeServClient(pSC);
+    int result = 0;
+    //char *reponse = "";
 
-    int result=0;
-    char *reponse="rien";
-    printf("test2 \n");
+    while(1)
+    {
+        result = pipe_read(&pServD1R, buffer, BUFFER_SIZE);
+
+        if (result==0){
+            result = pipe_read(&pServD2R, buffer, BUFFER_SIZE);
+        }
+
+        if (result != 0){
+
+            pipe_open_write(&pServD1R);
+            pipe_write(&pServD1R, buffer);
+        }
+    }
+
+}
+
+    /*
     /////////LE SERVEUR LIT LA SORTIE DU PIPE ENTRE LE SERV DE DONNEE ET LE SERV DE ROUTAGE///////////////////
     while(result ==0){
         result = pipe_read(&pServD1R, buffer, BUFFER_SIZE);
@@ -102,13 +112,5 @@ int main()
     pipe_write(&pServD2R, reponse);
        
     //usleep(1000);
+    */
 
-}
-
-    //test
-    //pipe_init(&p,"serv.pipe" , "client.pipe" );
-    //char *toto = pipe_format(&p);
-    //printf( "  %s \n", toto);
-    //pipe_write(CLIENT_SERV_TUBE, );
-    
-    

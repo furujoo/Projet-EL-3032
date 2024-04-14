@@ -1,0 +1,17 @@
+- Créer la liaison entre la table de routage de et le pipe
+- écrir le code du client dans la tabkle de routage 
+- supprimer le text du pipe
+- cherche dans le fichier de config le pipe attribué au numero de serveur 
+- envoyer la requette dans le pipe serveur de donnée choisit
+- recevoir le menue
+- supprimer du pipe
+- retrouver le client attribué à la demande
+- supprimer le text dans la table de rouatge 
+- envoyer le menu au bon pipe 
+
+
+Serv DOnné :
+- cherche la requette parmit ses restaurant 
+- envoie le menu mak
+
+- mesagge d'erreur si ùauvais client
