@@ -1,3 +1,3 @@
-"Le resto de l'Esiee" 7742 "Menu_Esiee.txt"
-"Good and Tasty" 7120 "Menu_Jour.txt"
+7742 Esiee.txt
+7120 GoodAndTeasty.txt
 
