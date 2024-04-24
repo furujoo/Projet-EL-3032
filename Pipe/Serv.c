@@ -40,25 +40,29 @@ int main()
     printf( "  %s \n", toto);
     free(toto);
 
-    /*
+
+    char buffer[BUFFER_SIZE];
+    char chaine[TAILLE_MAX];
+    
 
     FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
-    
     while(fgets(chaine, TAILLE_MAX, ListeLieux) != NULL){
         printf("%s \n", chaine);
     }
         
     fclose(ListeLieux);
     
-    */
 
-    char buffer[BUFFER_SIZE];
-    char chaine[TAILLE_MAX];
+    
 
     printf("test1 \n");
 
     int result = 0;
     //char *reponse = "";
+
+     
+    
+    
 
     while(1)
     {
@@ -71,7 +75,8 @@ int main()
         if (result != 0){
 
             pipe_open_write(&pServD1R);
-            pipe_write(&pServD1R, buffer);
+            pipe_write(&pServD1R, "R Menu le costaud ");
+            pipe_free(&pServD1R);
         }
     }
 

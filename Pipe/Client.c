@@ -68,6 +68,38 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
        
         //pipe_write(&pClientServR,messageClient);
 
+/*
+
+        int longueur_totale = strlen(typeR) + strlen(CodeServ) + strlen(CodeLieu) + strlen(CodeMenu)+strlen(message) + 7; // 7 pour les caractères '|'
+
+        char *chaine_resultante = (char *)malloc(longueur_totale * sizeof(char));
+
+        if(typeR == 'R' || typeR == 'D'){
+            sprintf(chaine_resultante, "|%s|%s|%s|%s|%s|", typeR, CodeServ, CodeLieu, CodeMenu,message);
+        }
+
+        if(typeR == 'E'){
+            sprintf(chaine_resultante, "|%s|%s|%s|%s|%s|", typeR, CodeServ, CodeLieu, CodeMenu,erreur);
+        }
+
+        
+        
+
+        if (chaine_resultante == NULL) {
+            printf("Erreur d'allocation de mémoire\n");
+            
+        }
+
+        // Affichage de la chaîne résultante
+        printf("Chaîne résultante du protocole de Communication: %s\n", chaine_resultante);
+
+        */
+
+        // Libération de la mémoire allouée
+        //free(chaine_resultante);
+
+
+        
         if(typeR[0] == 'D'){
             printf("|%c|%d|%d|%d|| \n", typeR[0],atoi(CodeServ),atoi(CodeLieu),atoi(CodeMenu));
         }
@@ -80,6 +112,7 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
         else{
             printf("Requete inconnue \n");
         }
+        
 
         //// Variable de la Commande écrite /////
 
