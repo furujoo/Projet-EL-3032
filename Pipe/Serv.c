@@ -46,6 +46,7 @@ int main()
     
 
     FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
+    
     while(fgets(chaine, TAILLE_MAX, ListeLieux) != NULL){
         printf("%s \n", chaine);
     }
@@ -53,7 +54,7 @@ int main()
     fclose(ListeLieux);
     
 
-    
+
 
     printf("test1 \n");
 
