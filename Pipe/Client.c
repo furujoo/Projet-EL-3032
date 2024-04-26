@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
         for (int i = 1; i < argc; i++) {
             strcat(Commande, argv[i]);
             if (i < argc - 1) {
-                strcat(Commande, " "); // Ajoute un espace seulement si ce n'est pas le dernier argument
+                strcat(Commande, "|"); // Ajoute un espace seulement si ce n'est pas le dernier argument
             }
         }
 
@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) ////TO DO Possible aussi de remplacer les noms 
             
         }
 
-        printf("Données lu (%d) :%s \n",result, buffer);
+        printf(" Menu (%d) : %s \n",result, buffer);
 
 
       

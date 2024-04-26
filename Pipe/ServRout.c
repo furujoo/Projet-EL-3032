@@ -110,7 +110,7 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
             }
 
             else if (strcmp(Serveur, "2222") == 0){
-                printf ("Data read (%d bytes): %s\n", result, buffer); ///bufferSD a la place de buffer?
+                printf ("Data read (%d bytes): %s\n", result, buffer); 
                 pipe_open_write(&pServRD2);
                 pipe_write(&pServRD2,buffer);
             }
@@ -120,6 +120,7 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
                 //pipe_write(&pServRClient1,"serveur inconnu");
                 printf ("%s : serveur inconnu\n", Serveur);
             }
+            result = 0;
 
         }
         
@@ -128,13 +129,16 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
             char Client = bufferSD[0];
 
             char Menu[BUFFER_SIZE] = "";
+
+            //pipe_open_write(&pServRClient1);
+            //pipe_write(&pServRClient1, bufferSD);
 /*
             for (int i = 1; i < BUFFER_SIZE; i++) {
                 char temp[2] = {bufferSD[i], '\0'}; 
                 strcat(Menu, temp);
             }
 */
-            if(Client == 'R'){
+            if(Client == '1'){
                 pipe_open_write(&pServRClient1);
                 pipe_write(&pServRClient1, bufferSD);
             }
