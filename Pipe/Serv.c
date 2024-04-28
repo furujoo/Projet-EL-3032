@@ -7,12 +7,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pipe.h"
+#include <stdbool.h>
 
 #define BUFFER_SIZE 256
 #define TAILLE_MAX 2000
 #define MAX_MOTS 100
 
-//#define CLIENT_SERV_TUBE "clientserv.tube"
+//Fonctions qui initialisent des Pipes
 
 void Pipe1111(Pipe *pipe){
     pipe_init(pipe,"servD1.pipe" , "servR1.pipe" );
@@ -25,10 +26,11 @@ void Pipe2222(Pipe *pipe){
 
 
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
+
+    ////Initialisation des pipe et des variables utilisés////
     Pipe pServD1R, pServD2R;
-    ////Initialisation du pipe////
+    
     char buffer[BUFFER_SIZE]="";
     char chaine[TAILLE_MAX]="";
 
@@ -40,7 +42,6 @@ int main(int argc, char *argv[])
 
     int result = 0;
     int result2=0;
-    //char *reponse = "";
 
     char* NumServ = argv[1];
     
@@ -50,9 +51,12 @@ int main(int argc, char *argv[])
     int CodeMenu;
     char NumClient;
 
+    bool Erreur = false;
+    bool ErreurServ = false;
+    bool ErreurLieu = false;
+    bool ErreurMenu = false;
+
     
-
-
     Pipe1111(&pServD1R);
         char *toto = pipe_format(&pServD1R);
         printf( "  %s \n", toto);
@@ -64,225 +68,103 @@ int main(int argc, char *argv[])
         printf( "  %s \n", toto);
         free(toto);
 
-    
-    if (atoi(NumServ)==1111) {
+    ////////////////////////////////////////Serveur 1111///////////////////////////////////////////////////////
+    if (atoi(NumServ)==1111){
 
         printf("Serveur 1111 \n");
 
-        while(result==0){
+        while(result==0){ //////Lecture en boucle sur le pipe entre le serveur de Routage
             result = pipe_read(&pServD1R, buffer, BUFFER_SIZE);
-        }
+        }   
 
-
-
-        FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
+        FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux1111.txt", "r");   //////Apres lecture du contenu du pipe, on lit le fichier de Lieux qui correspond au serveur
  
 
-        while (fscanf(ListeLieux, "%s", mots[nb_mots]) != EOF) {
+        while (fscanf(ListeLieux, "%s", mots[nb_mots]) != EOF) {  /// On stocke chaque mot dans un tableau mots et on compte le nombre de mots présent dans le fichier
             nb_mots++;
             if (nb_mots >= MAX_MOTS) {
                 printf("Trop de mots dans le fichier.\n");
                 break;
             }
         }
-
-/*
-        for (int i = 0; i < nb_mots; i++) {
-            printf("Mot %d : %s\n", i+1, mots[i]);
-        }
-*/
-        fclose(ListeLieux);
-    
-        
-
-        //printf("buffer : %s \n", buffer);
-        
-
-        int elements_lus = sscanf(buffer, "%c|%d|%d|%d|%c", &typeR,&CodeServ, &CodeLieux, &CodeMenu,&NumClient);
-
-        //printf("nombres d'elements lus : %d\n  TypeR : %c \n, Code Serv : %d \n, Code Lieux : %d \n, Code Menu : %d \n",elements_lus,typeR, CodeServ,CodeLieux,CodeMenu);
-
-        
-
-        int nombre_mots = sizeof(mots)/sizeof(mots[0]);
-        
-        char NomFichierMenu[50];
-
-        printf("nombre d'element dans mots : %d\n", nombre_mots);
-        printf("nombre de mots : %d\n", nb_mots);
-
-        for (int i =0; i<nb_mots; i=i+2){
-            
-            if(atoi(mots[i]) == CodeLieux){  
-                strcpy(NomFichierMenu, mots[i+1]);
-            }
-            //else{
-             //   strcpy(NomFichierMenu, "Inconnu");
-            //}
-        }
-
-        printf("Le nom du fichier est %s \n", NomFichierMenu);
-        
-        
-
-        //char chemin = "/workspaces/Projet-EL-3032/Base de donnée/";
-
-
-        //FILE *ListeMenu = fopen(fichierMenu, "r");
-        
-
-        //char* chemin = strcat(,NomFichierMenu);
-
-        char chemin[100];
-
-        snprintf(chemin, sizeof(chemin), "/workspaces/Projet-EL-3032/Base de donnée/%s", NomFichierMenu);
-        FILE *ListeMenu = fopen(chemin, "r");
-
-       
-
-       
-        while (fscanf(ListeMenu, "%s", mots_menu[nb_mots_menu]) != EOF) {
-            
-            nb_mots_menu++;
-            if (nb_mots_menu >= MAX_MOTS) {
-                printf("Trop de mots dans le fichier.\n");
-                break;
-            }
-        }
-        printf("nombre de mots menu: %d\n", nb_mots_menu);
-        
-    
-        //int nombre_mots_menu = sizeof(mots_menu)/sizeof(mots_menu[0]);
-
-        //printf("nombre d'element ds tableau mots menu: %d\n", nombre_mots_menu);
-
-        
-
-
-        char Commande[200]="";
-        
-        //strcpy(Commande,&NumClient);
-        
-        //strcat(Commande, " ");
-        
- /*
-        for (int i = 1; i < argc; i++) {
-            strcat(Commande, argv[i]);
-            if (i < argc - 1) {
-                strcat(Commande, "|"); // Ajoute un espace seulement si ce n'est pas le dernier argument
-            }
-        }
-        */
-        
-        for (int i =1; i<nb_mots_menu; i=i+2){
-            
-            strcat(Commande, mots_menu[i]);
-            if (i < nb_mots_menu - 1) {
-                strcat(Commande, " "); // Ajoute un espace seulement si ce n'est pas le dernier argument
-            }
-            //Commance strcat(NumClient ,mots_menu[i])
-        }
-
-
-
-        printf("Le menu est : %s ", Commande);
-
-
-        char Reponse[200]="";
-        
-        //strcpy(Reponse,&NumClient);
-        
-        snprintf(Reponse, 300, "|%c|R|%d|%d|%d|%s|", NumClient,CodeServ,CodeLieux,CodeMenu,Commande );
-
-        printf("Le truc formaté : %s \n", Reponse);
-
-        
-        
-        pipe_write(&pServD1R, Reponse); 
-        
+        fclose(ListeLieux);   
 
     }
 
 
-
+////////////////////////////////////////    Serveur 2222    ///////////////////////////////////////////////////////
 
     else if (atoi(NumServ)==2222){
-
-
-        printf("Serveur 2222 \n");
-
-
-
-        while(result2==0){
+       printf("Serveur 2222 \n");
+        while(result2==0){  //////Lecture en boucle sur le pipe entre le serveur de Routage
             result2 = pipe_read(&pServD2R, buffer, BUFFER_SIZE);
         }
         
-        FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
+        FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux2222.txt", "r");    //////Apres lecture du contenu du pipe, on lit le fichier de Lieux qui correspond au serveur
  
-
-        while (fscanf(ListeLieux, "%s", mots[nb_mots]) != EOF) {
+        while (fscanf(ListeLieux, "%s", mots[nb_mots]) != EOF) {       /// On stocke chaque mot dans un tableau mots et on compte le nombre de mots présent dans le fichier
             nb_mots++;
             if (nb_mots >= MAX_MOTS) {
                 printf("Trop de mots dans le fichier.\n");
                 break;
             }
         }
+        fclose(ListeLieux);   
+    }
 
-/*
-        for (int i = 0; i < nb_mots; i++) {
-            printf("Mot %d : %s\n", i+1, mots[i]);
-        }
-*/
-        fclose(ListeLieux);
+    //////////////////////////////////////// Si Serveur INCONNU///////////////////////////////////////////////////////
+
+    else{   
+        Erreur = true;
+
+        printf("Serveur Inconnu veuillez reesayer \n");
+
+        /*
+        char MessageErreurS[200] = "";
+        snprintf(MessageErreurS, 300, "|%c|R|%d|%d|%d|%s|", NumClient,CodeServ,CodeLieux,CodeMenu,"Erreur: Serveur Inconnu, Veuillez reessayer" );
+
+        printf("%s \n", MessageErreurS); 
+        
+        */
+    }
+
+
+    /////Lecture des Fichiers et envoie du Menu au Serveur de Routage puis au Client////////////
+
+   
+
+    int elements_lus = sscanf(buffer, "%c|%d|%d|%d|%c", &typeR,&CodeServ, &CodeLieux, &CodeMenu,&NumClient); ////Parsing du message reçu par le serveur de Routage
+
+    if((CodeServ != 1111) & (CodeServ != 2222)){  
+        Erreur = true;   /////On verifie si les codes serveur du Client sont bon 
+        
+    }
+
+    char NomFichierMenu[50];   
+        
     
-        
-
-        //printf("buffer : %s \n", buffer);
-        
-
-        int elements_lus = sscanf(buffer, "%c|%d|%d|%d|%c", &typeR,&CodeServ, &CodeLieux, &CodeMenu,&NumClient);
-
-        //printf("nombres d'elements lus : %d\n  TypeR : %c \n, Code Serv : %d \n, Code Lieux : %d \n, Code Menu : %d \n",elements_lus,typeR, CodeServ,CodeLieux,CodeMenu);
-
-        
-
-        int nombre_mots = sizeof(mots)/sizeof(mots[0]);
-        
-        char NomFichierMenu[50];
-
-        printf("nombre d'element dans mots : %d\n", nombre_mots);
-        printf("nombre de mots : %d\n", nb_mots);
-
-        for (int i =0; i<nb_mots; i=i+2){
-            
-            if(atoi(mots[i]) == CodeLieux){  
-                strcpy(NomFichierMenu, mots[i+1]);
-            }
-            //else{
-             //   strcpy(NomFichierMenu, "Inconnu");
-            //}
+    for (int i =0; i<nb_mots; i=i+2){      
+        if(atoi(mots[i]) == CodeLieux){          //On cherche dans les mots trouvés le Lieu correspondant au Code Lieu du Client     
+            strcpy(NomFichierMenu, mots[i+1]);  // Dans notre Fichier, on suit le format suivant. Les élements pair (0,2,4...) correspondent au Code du Lieu et les élements impairs correspondent au Nom du fichier où se trouvent les menu du Lieu
+            Erreur = false;  
+            ErreurLieu= false;                  //On signale qu'il n'y pas d'erreur
+            break;
         }
+        else{
+            Erreur = true;                      //Si on ne trouve pas de lieu qui correspond au Code du client, on signale une erreur
+            ErreurLieu= true;       
+        }
+    }
 
-        printf("Le nom du fichier est %s \n", NomFichierMenu);
-        
-        
 
-        //char chemin = "/workspaces/Projet-EL-3032/Base de donnée/";
-
-
-        //FILE *ListeMenu = fopen(fichierMenu, "r");
-        
-
-        //char* chemin = strcat(,NomFichierMenu);
+    if(Erreur==false){    ////Si il n'y a pas d'erreur , le serveur de Donnée envoie sa réponse au Serveur de Routage
 
         char chemin[100];
+        char Commande[200]="";
 
-        snprintf(chemin, sizeof(chemin), "/workspaces/Projet-EL-3032/Base de donnée/%s", NomFichierMenu);
+        snprintf(chemin, sizeof(chemin), "/workspaces/Projet-EL-3032/Base de donnée/%s", NomFichierMenu); ////On lit le fichier apres avoir recuperer le nom du fichier plus tot et l'avoir stocké dans NomFichierMenu
         FILE *ListeMenu = fopen(chemin, "r");
 
-       
-
-        
         while (fscanf(ListeMenu, "%s", mots_menu[nb_mots_menu]) != EOF) {
             
             nb_mots_menu++;
@@ -291,64 +173,76 @@ int main(int argc, char *argv[])
                 break;
             }
         }
-        printf("nombre de mots menu: %d\n", nb_mots_menu);
         
-    
-        //int nombre_mots_menu = sizeof(mots_menu)/sizeof(mots_menu[0]);
-
-        //printf("nombre d'element ds tableau mots menu: %d\n", nombre_mots_menu);
-
         
-
-
-        char Commande[200]="";
-        
-        strcpy(Commande,&NumClient);
-        
-        strcat(Commande, " ");
-        
- /*
-        for (int i = 1; i < argc; i++) {
-            strcat(Commande, argv[i]);
-            if (i < argc - 1) {
-                strcat(Commande, "|"); // Ajoute un espace seulement si ce n'est pas le dernier argument
-            }
-        }
-        */
-        
-        for (int i =1; i<nb_mots_menu; i=i+2){
+        for (int i=0; i<nb_mots_menu; i=i+2){
             
-            strcat(Commande, mots_menu[i]);
-            if (i < nb_mots_menu - 1) {
-                strcat(Commande, " "); // Ajoute un espace seulement si ce n'est pas le dernier argument
-            }
-            //Commance strcat(NumClient ,mots_menu[i])
-        }
-
-
-        printf("Le menu est : %s ", Commande);
-
-        
             
-        pipe_write(&pServD2R, Commande); 
-        
-        
-
-        /*while(result2 ==0){
-            result2 = pipe_read(&pServD2R, buffer, BUFFER_SIZE);
+            if (atoi(mots_menu[i])==CodeMenu) {  // On vérifie si un element dans le fichier correspond au code Menu donné par le client, si c'est le cas on stock le menu dans la variable Commande
+                strcpy(Commande, mots_menu[i+1]); 
+                break;     
+            }
+            else{
+                ErreurMenu= true;               //Si on ne trouve rien, on renvoie une erreur au Client
+            }
+            
         }
-        
-        int elements_lus = sscanf(buffer, "%c|%d|%d|%d|", &typeR,&CodeServ, &CodeLieux, &CodeMenu);
 
-        //pipe_write(&pServD2R, "qqchose");*/
+
+
+       
+        if(ErreurMenu == false){
+            char Reponse[200]="";
+            snprintf(Reponse, 300, "|%c|R|%d|%d|%d|%s|", NumClient,CodeServ,CodeLieux,CodeMenu,Commande );  ///Envoie de la reponse au Client suivant le format du protocole de communication
+            printf("La Répônse Envoyée : %s \n", Reponse);
+            pipe_write(&pServD1R, Reponse); 
+
+        }
+
+        else if(ErreurMenu == true) {
+            char ErreurMenu[200]="";
+            snprintf(ErreurMenu, 300, "|%c|R|%d|%d|%d|Le Code du Menu est incorrect|", NumClient,CodeServ,CodeLieux,CodeMenu );  ///Envoie de la reponse au Client suivant le format du protocole de communication
+            printf("La Répônse Envoyée : %s \n", ErreurMenu);
+            pipe_write(&pServD1R, ErreurMenu); 
+
+        }
     }
 
-    else{
-        printf("Serveur de données inconnu, veuillez ressayer");
+
+
+
+////////////////////////En cas d'erreur de Code Serveur, Code Menu ou Code Lieu, le serveur prépare un message d'erreur selon le type d'erreur ////////////////////////////
+
+    else if (Erreur == true){
+        char MessageErreur[300]="";
+        char MessageErreurServ[300]="";
         
+
+
+        if(ErreurServ == true){
+            snprintf(MessageErreurServ, 300, "|%c|R|%d|%d|%d|Code Serv Inconnu|", NumClient,CodeServ,CodeLieux,CodeMenu );
+            printf("Le code Serveur est inconnu");
+            if (atoi(NumServ)==1111){
+                pipe_write(&pServD1R, MessageErreurServ);
+            }
+            else if(atoi(NumServ)==2222){
+                pipe_write(&pServD2R, MessageErreurServ);
+            }
         }
 
 
+
+        if(ErreurLieu == true){ //Si on a une erreur sur le code Lieu envoyé par le client, on le signale
+            snprintf(MessageErreur, 300, "|%c|R|%d|%d|%d|Code Lieu Inconnu|", NumClient,CodeServ,CodeLieux,CodeMenu );
+            printf("L'Erreur est': %s \n", MessageErreur);
+            if (atoi(NumServ)==1111){
+                pipe_write(&pServD1R, MessageErreur);
+            }
+            else if(atoi(NumServ)==2222){
+                pipe_write(&pServD2R, MessageErreur);
+            }
+        }                  
+    }
 }
 
 
@@ -358,67 +252,4 @@ int main(int argc, char *argv[])
   
     
 
-
-    
-
-   /*
-
-    while(1)
-    {
-        result = pipe_read(&pServD1R, buffer, BUFFER_SIZE);
-
-        if (result==0){
-            result = pipe_read(&pServD2R, buffer, BUFFER_SIZE);
-        }
-
-        //printf("Buffer : %s \n", buffer);
-        // Utilisation de sscanf pour extraire les éléments de la chaîne
-        int elements_lus = sscanf(buffer, "%c %d %d %d", &typeR,&CodeServ, &CodeLieux, &CodeMenu);
-
-        //printf("Elements lus: %d \n", elements_lus);
-
-        if (result != 0){
-            pipe_write(&pServD1R, "R Menu le costaud ");
-        }
-    }
-
-}
-*/
-
-    /*
-    /////////LE SERVEUR LIT LA SORTIE DU PIPE ENTRE LE SERV DE DONNEE ET LE SERV DE ROUTAGE///////////////////
-    while(result ==0){
-        result = pipe_read(&pServD1R, buffer, BUFFER_SIZE);
-        if (result!=0){
-            
-            break;
-        }
-        else{
-        result = pipe_read(&pServD2R, buffer, BUFFER_SIZE);// Utilsier getopt ou juste argc/argv
-        }   
-    }
-    printf("Données lu (%d) :%s \n",result, buffer);
-
-
-    printf("test3 \n");
-    //////////////////LE SERVEUR ENVOIE SA REPONSE AU SERVEUR DE ROUTAGE////////////////////////////
-
-
-    printf("test4 \n");
-
-
-
-    ///////////////////ECRITURE SUR LES PIPE CORRESPONDANT A CONFIGURER////////////////////////////
-
-    //////ECRITURE SUR LE PIPE SERVEUR 1 VERS SERVEUR ROUTAGE/////
-    pipe_open_write(&pServD1R);
-    pipe_write(&pServD1R, reponse);
-    //pipe_free(&pServDR);
-
-    //////ECRITURE SUR LE PIPE SERVEUR 2 VERS SERVEUR ROUTAGE/////
-    pipe_open_write(&pServD2R);
-    pipe_write(&pServD2R, reponse);
-       
-    //usleep(1000);
-    */
 
