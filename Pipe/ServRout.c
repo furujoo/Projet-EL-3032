@@ -9,8 +9,12 @@
 #include "pipe.h"
 
 #define BUFFER_SIZE 256
+#define TAILLE_MAX 2000
+#define MAX_MOTS 100
 
 #define CLIENT_SERV_TUBE "clientserv.tube"
+
+
 
 // Pipe vers le serveur de données 1
 void PipeServRoutD1(Pipe *pipe){
@@ -44,6 +48,36 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
     char bufferSD[BUFFER_SIZE];
 
     //initialisation des pipes
+    char serveur[TAILLE_MAX][50];  //liste des serveur  
+    //int nb_mot =0;  //nombre de serveur
+    int nb_serv =0;
+
+    FILE *ListeServ = fopen("/workspaces/Projet-EL-3032/Base de donnée/liste des serveurs.txt", "r");
+    
+    while (fscanf(ListeServ, "%s", serveur[nb_serv]) != EOF) {
+        nb_serv++;
+        if (nb_serv >= MAX_MOTS) {
+            printf("Trop de mots dans le fichier.\n");
+            break;
+        }
+    }
+    //nb_serv = nb_mot/2;
+
+    printf("Nombre de serveur : %d\n", nb_serv);
+
+    char nomPipe[50]= "PipeSD.pipe";
+
+    for (int i = 0; i < nb_serv; i++){
+        strcat(nomPipe, serveur[i]);
+        printf("%s", nomPipe);
+        Pipe pipe; // Création d'une instance de la structure Pipe
+        pipe_init(&pipe,"servRD.pipe" , nomPipe);
+        char *toto = pipe_format(&pipe);
+        printf( "  %s \n", toto);
+        free(toto);
+        char nomPipe = "PipeSD";
+    }
+    /*
     Pipe pServRClient1,pServRClient2, pServRD1, pServRD2;
 
 
@@ -68,11 +102,9 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
     toto = pipe_format(&pServRClient2);
     printf( "  %s \n", toto);
     free(toto);
-
     
     int result = 0;
     int resultServD = 0;
-    
     
     //changement de methode pour la table de routage, lécture de tout puis des if si infos lu )
     while(1){
@@ -104,7 +136,6 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
             //printf ( "%s", buffer[2]);
             if (strcmp(Serveur, "1111") == 0){
                 printf ("Data read (%d bytes): %s\n", result, buffer);
-                pipe_open_write(&pServRD1);
                 printf ("Data sent to server 1111 \n");
                 pipe_write(&pServRD1, buffer);
 
@@ -112,7 +143,6 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
 
             else if (strcmp(Serveur, "2222") == 0){
                 printf ("Data read (%d bytes): %s\n", result, buffer); 
-                pipe_open_write(&pServRD2);
                 printf ("Data sent to server 2222 \n");
                 pipe_write(&pServRD2,buffer);
             }
@@ -130,7 +160,7 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
 
             char Client = bufferSD[1];
 
-            char Menu[BUFFER_SIZE] = "";
+            //char Menu[BUFFER_SIZE] = "";
 
             //pipe_open_write(&pServRClient1);
             //pipe_write(&pServRClient1, bufferSD);
@@ -140,15 +170,14 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
                 strcat(Menu, temp);
             }
 */
+/*
             if(Client == '1'){
                 printf("Il s'agit du Client 1 \n");
-                pipe_open_write(&pServRClient1);
                 pipe_write(&pServRClient1, bufferSD);
             }
 
             else if(Client == '2'){
                 printf("Il s'agit du Client 2\n");
-                //pipe_open_write(&pServRClient2);
                 pipe_write(&pServRClient2, bufferSD);
             }
             else{
@@ -159,6 +188,7 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
 
         }
     }
+*/
     
 }
 
