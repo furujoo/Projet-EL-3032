@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     int CodeServ;
     int CodeLieux;
     int CodeMenu;
-    int NumClient;
+    char NumClient;
 
     
 
@@ -69,7 +69,9 @@ int main(int argc, char *argv[])
 
         printf("Serveur 1111 \n");
 
-        
+        while(result==0){
+            result = pipe_read(&pServD1R, buffer, BUFFER_SIZE);
+        }
 
 
 
@@ -91,14 +93,12 @@ int main(int argc, char *argv[])
 */
         fclose(ListeLieux);
     
-        while(result==0){
-            result = pipe_read(&pServD1R, buffer, BUFFER_SIZE);
-        }
+        
 
         //printf("buffer : %s \n", buffer);
         
 
-        int elements_lus = sscanf(buffer, "%c|%d|%d|%d|%d", &typeR,&CodeServ, &CodeLieux, &CodeMenu,&NumClient);
+        int elements_lus = sscanf(buffer, "%c|%d|%d|%d|%c", &typeR,&CodeServ, &CodeLieux, &CodeMenu,&NumClient);
 
         //printf("nombres d'elements lus : %d\n  TypeR : %c \n, Code Serv : %d \n, Code Lieux : %d \n, Code Menu : %d \n",elements_lus,typeR, CodeServ,CodeLieux,CodeMenu);
 
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 
         int nombre_mots = sizeof(mots)/sizeof(mots[0]);
         
-        char NomFichierMenu[50]="t";
+        char NomFichierMenu[50];
 
         printf("nombre d'element dans mots : %d\n", nombre_mots);
         printf("nombre de mots : %d\n", nb_mots);
@@ -122,20 +122,25 @@ int main(int argc, char *argv[])
         }
 
         printf("Le nom du fichier est %s \n", NomFichierMenu);
-        printf("test6 \n");
+        
         
 
         //char chemin = "/workspaces/Projet-EL-3032/Base de donnée/";
 
 
         //FILE *ListeMenu = fopen(fichierMenu, "r");
-        printf("test5 \n");
+        
 
         //char* chemin = strcat(,NomFichierMenu);
 
-        FILE *ListeMenu = fopen("/workspaces/Projet-EL-3032/Base de donnée/Esiee.txt", "r");
+        char chemin[100];
 
-        printf("test3 \n");
+        snprintf(chemin, sizeof(chemin), "/workspaces/Projet-EL-3032/Base de donnée/%s", NomFichierMenu);
+        FILE *ListeMenu = fopen(chemin, "r");
+
+       
+
+       
         while (fscanf(ListeMenu, "%s", mots_menu[nb_mots_menu]) != EOF) {
             
             nb_mots_menu++;
@@ -147,20 +152,53 @@ int main(int argc, char *argv[])
         printf("nombre de mots menu: %d\n", nb_mots_menu);
         
     
-        int nombre_mots_menu = sizeof(mots_menu)/sizeof(mots_menu[0]);
+        //int nombre_mots_menu = sizeof(mots_menu)/sizeof(mots_menu[0]);
 
-        printf("nombre d'element ds tableau mots menu: %d\n", nombre_mots_menu);
-
-
+        //printf("nombre d'element ds tableau mots menu: %d\n", nombre_mots_menu);
 
         
 
+
+        char Commande[200]="";
+        
+        //strcpy(Commande,&NumClient);
+        
+        //strcat(Commande, " ");
+        
+ /*
+        for (int i = 1; i < argc; i++) {
+            strcat(Commande, argv[i]);
+            if (i < argc - 1) {
+                strcat(Commande, "|"); // Ajoute un espace seulement si ce n'est pas le dernier argument
+            }
+        }
+        */
+        
         for (int i =1; i<nb_mots_menu; i=i+2){
             
-             pipe_write(&pServD1R, strcat(NumClient ,mots_menu[i])); 
+            strcat(Commande, mots_menu[i]);
+            if (i < nb_mots_menu - 1) {
+                strcat(Commande, " "); // Ajoute un espace seulement si ce n'est pas le dernier argument
+            }
+            //Commance strcat(NumClient ,mots_menu[i])
         }
+
+
+
+        printf("Le menu est : %s ", Commande);
+
+
+        char Reponse[200]="";
+        
+        //strcpy(Reponse,&NumClient);
+        
+        snprintf(Reponse, 300, "|%c|R|%d|%d|%d|%s|", NumClient,CodeServ,CodeLieux,CodeMenu,Commande );
+
+        printf("Le truc formaté : %s \n", Reponse);
+
         
         
+        pipe_write(&pServD1R, Reponse); 
         
 
     }
@@ -172,15 +210,137 @@ int main(int argc, char *argv[])
 
 
         printf("Serveur 2222 \n");
+
+
+
+        while(result2==0){
+            result2 = pipe_read(&pServD2R, buffer, BUFFER_SIZE);
+        }
+        
+        FILE *ListeLieux = fopen("/workspaces/Projet-EL-3032/Base de donnée/ListeLieux.txt", "r");
+ 
+
+        while (fscanf(ListeLieux, "%s", mots[nb_mots]) != EOF) {
+            nb_mots++;
+            if (nb_mots >= MAX_MOTS) {
+                printf("Trop de mots dans le fichier.\n");
+                break;
+            }
+        }
+
+/*
+        for (int i = 0; i < nb_mots; i++) {
+            printf("Mot %d : %s\n", i+1, mots[i]);
+        }
+*/
+        fclose(ListeLieux);
+    
         
 
-        while(result2 ==0){
+        //printf("buffer : %s \n", buffer);
+        
+
+        int elements_lus = sscanf(buffer, "%c|%d|%d|%d|%c", &typeR,&CodeServ, &CodeLieux, &CodeMenu,&NumClient);
+
+        //printf("nombres d'elements lus : %d\n  TypeR : %c \n, Code Serv : %d \n, Code Lieux : %d \n, Code Menu : %d \n",elements_lus,typeR, CodeServ,CodeLieux,CodeMenu);
+
+        
+
+        int nombre_mots = sizeof(mots)/sizeof(mots[0]);
+        
+        char NomFichierMenu[50];
+
+        printf("nombre d'element dans mots : %d\n", nombre_mots);
+        printf("nombre de mots : %d\n", nb_mots);
+
+        for (int i =0; i<nb_mots; i=i+2){
+            
+            if(atoi(mots[i]) == CodeLieux){  
+                strcpy(NomFichierMenu, mots[i+1]);
+            }
+            //else{
+             //   strcpy(NomFichierMenu, "Inconnu");
+            //}
+        }
+
+        printf("Le nom du fichier est %s \n", NomFichierMenu);
+        
+        
+
+        //char chemin = "/workspaces/Projet-EL-3032/Base de donnée/";
+
+
+        //FILE *ListeMenu = fopen(fichierMenu, "r");
+        
+
+        //char* chemin = strcat(,NomFichierMenu);
+
+        char chemin[100];
+
+        snprintf(chemin, sizeof(chemin), "/workspaces/Projet-EL-3032/Base de donnée/%s", NomFichierMenu);
+        FILE *ListeMenu = fopen(chemin, "r");
+
+       
+
+        
+        while (fscanf(ListeMenu, "%s", mots_menu[nb_mots_menu]) != EOF) {
+            
+            nb_mots_menu++;
+            if (nb_mots_menu >= MAX_MOTS) {
+                printf("Trop de mots dans le fichier.\n");
+                break;
+            }
+        }
+        printf("nombre de mots menu: %d\n", nb_mots_menu);
+        
+    
+        //int nombre_mots_menu = sizeof(mots_menu)/sizeof(mots_menu[0]);
+
+        //printf("nombre d'element ds tableau mots menu: %d\n", nombre_mots_menu);
+
+        
+
+
+        char Commande[200]="";
+        
+        strcpy(Commande,&NumClient);
+        
+        strcat(Commande, " ");
+        
+ /*
+        for (int i = 1; i < argc; i++) {
+            strcat(Commande, argv[i]);
+            if (i < argc - 1) {
+                strcat(Commande, "|"); // Ajoute un espace seulement si ce n'est pas le dernier argument
+            }
+        }
+        */
+        
+        for (int i =1; i<nb_mots_menu; i=i+2){
+            
+            strcat(Commande, mots_menu[i]);
+            if (i < nb_mots_menu - 1) {
+                strcat(Commande, " "); // Ajoute un espace seulement si ce n'est pas le dernier argument
+            }
+            //Commance strcat(NumClient ,mots_menu[i])
+        }
+
+
+        printf("Le menu est : %s ", Commande);
+
+        
+            
+        pipe_write(&pServD2R, Commande); 
+        
+        
+
+        /*while(result2 ==0){
             result2 = pipe_read(&pServD2R, buffer, BUFFER_SIZE);
         }
         
         int elements_lus = sscanf(buffer, "%c|%d|%d|%d|", &typeR,&CodeServ, &CodeLieux, &CodeMenu);
 
-        //pipe_write(&pServD2R, "qqchose");
+        //pipe_write(&pServD2R, "qqchose");*/
     }
 
     else{

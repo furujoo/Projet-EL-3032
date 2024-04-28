@@ -105,6 +105,7 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
             if (strcmp(Serveur, "1111") == 0){
                 printf ("Data read (%d bytes): %s\n", result, buffer);
                 pipe_open_write(&pServRD1);
+                printf ("Data sent to server 1111 \n");
                 pipe_write(&pServRD1, buffer);
 
             }
@@ -112,6 +113,7 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
             else if (strcmp(Serveur, "2222") == 0){
                 printf ("Data read (%d bytes): %s\n", result, buffer); 
                 pipe_open_write(&pServRD2);
+                printf ("Data sent to server 2222 \n");
                 pipe_write(&pServRD2,buffer);
             }
 
@@ -126,7 +128,7 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
         
         if (resultServD !=0){
 
-            char Client = bufferSD[0];
+            char Client = bufferSD[1];
 
             char Menu[BUFFER_SIZE] = "";
 
@@ -139,13 +141,20 @@ int main()  ///Garder les codes envoyés par le client pour pouvoir reconnaitre 
             }
 */
             if(Client == '1'){
+                printf("Il s'agit du Client 1 \n");
                 pipe_open_write(&pServRClient1);
                 pipe_write(&pServRClient1, bufferSD);
             }
 
-            if(Client == '2'){
+            else if(Client == '2'){
+                printf("Il s'agit du Client 2\n");
                 //pipe_open_write(&pServRClient2);
-                //pipe_write(&pServRClient2, Menu);
+                pipe_write(&pServRClient2, bufferSD);
+            }
+            else{
+                
+                printf("Client Inconnu\n");
+
             }
 
         }
