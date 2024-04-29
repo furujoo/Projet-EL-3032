@@ -16,7 +16,8 @@ Comment utiliser notre programe :
 
 En premier ou en deuxieme le terminal Serveur de Routage :
 
-    Démarer l'exectuable ServRout en mentionnant le nombre de client Max Exemple: ./ServRout 2 pour 2 client max
+    Démarer l'exectuable ServRout en mentionnant le nombre de client Max Exemple: ./ServRout 2 pour 2 client max  
+    ATTENTION : Si vous mettez plus que 2 clients, ca ne marchera (probablement) pas. Il faut mettre 2. 
 
 
 
