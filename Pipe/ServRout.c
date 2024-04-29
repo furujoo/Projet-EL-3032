@@ -33,9 +33,10 @@ int main(int argc, char *argv[])  ///Garder les codes envoyés par le client pou
 
     char serveur[TAILLE_MAX][50];  //liste des serveur  
     int nb_serv =0; //NOMBRE DE SERVEUR
-
+    
     //ouverture du fichier liste des serveur
-    FILE *ListeServ = fopen("/workspaces/Projet-EL-3032/Base de donnée/liste des serveurs.txt", "r");
+    FILE *ListeServ = fopen("../BaseDeDonnee/liste_des_serveurs.txt", "r");
+    
     
     //remplissage de la liste des serveur
     while (fscanf(ListeServ, "%s", serveur[nb_serv]) != EOF) {
