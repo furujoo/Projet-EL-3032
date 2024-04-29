@@ -1,4 +1,4 @@
-# Projet-EL-3032 EL FTOUH Khalid/RAHME Jovan
+# Projet-EL-3032 ELFTOUH Khalid / RAHME Jovan
 
 Comment utiliser notre programe :
 
@@ -16,7 +16,7 @@ Comment utiliser notre programe :
 
 En premier ou en deuxieme le terminal Serveur de Routage :
 
-    Démarer l'exectuable ServRout : ./ServRout
+    Démarer l'exectuable ServRout en mentionnant le nombre de client Max Exemple: ./ServRout 2 pour 2 client max
 
 
 
