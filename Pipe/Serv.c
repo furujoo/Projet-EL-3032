@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
     int CodeServ;
     int CodeLieux;
     int CodeMenu;
-    char NumClient;
+    
 
     bool Erreur = false;
     bool ErreurServ = false;
