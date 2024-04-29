@@ -6,143 +6,231 @@
 #include <sys/stat.h> // for mkfifo
 #include <unistd.h> // for read, write
 #include <stdlib.h>
+#include <stdarg.h>
 #include "pipe.h"
 
 #define BUFFER_SIZE 256
-
-#define CLIENT_SERV_TUBE "clientserv.tube"
-
-// Pipe vers le serveur de données 1
-void PipeServRoutD1(Pipe *pipe){
-    pipe_init(pipe,"servR1.pipe" , "servD1.pipe" ); 
-}
-
-// Pipe vers le serveur de données 2
-void PipeServRoutD2(Pipe *pipe){
-    pipe_init(pipe,"servR1.pipe" , "servD2.pipe" );
-}
-
-// Pipe vers le Client 1
-void PipeServRClient1(Pipe *pipe){
-    pipe_init(pipe,"servR.pipe" , "client1.pipe" );
-}
-
-// Pipe vers le Client 2 
-void PipeServRClient2(Pipe *pipe){
-    pipe_init(pipe,"servR.pipe" , "client2.pipe" );
-}
+#define TAILLE_MAX 2000
+#define MAX_MOTS 100
 
 
+int main(int argc, char *argv[])  ///Garder les codes envoyés par le client pour pouvoir reconnaitre plus tard à qui renvoyer les données : si les 3 codes sont les meme forcement la reposne sera la meme pour n'importe quel utilisateur
+{
 
-int main()  {
-
-/////////////////// INITIALISATION DES VARIABLES ////////////////////////
+/////////////////// INITIALISATION /////////////////////////////////////////////////////////////////
 
     //initialisation de la variable qui stock les messages
     char buffer[BUFFER_SIZE];
-    char bufferSD[BUFFER_SIZE];
-
-    //initialisation des pipes
-    Pipe pServRClient1,pServRClient2, pServRD1, pServRD2;
+    char buffersd[BUFFER_SIZE];
 
 
-    PipeServRoutD1(&pServRD1);
-    char *toto = pipe_format(&pServRD1);
-    printf( "  %s \n", toto);
-    free(toto);
 
-    PipeServRoutD2(&pServRD2);
-    toto = pipe_format(&pServRD2);
-    printf( "  %s \n", toto);
-    free(toto);
+    //////////////////////////// INITIALISATION DES PIPES /////////////////////////////////////
 
 
-    PipeServRClient1(&pServRClient1);
-    toto = pipe_format(&pServRClient1);
-    printf( "  %s \n", toto);
-    free(toto);
 
+    //////////////////// INITIALISATION DES PIPES SERVEURS ////////////////////
 
-    PipeServRClient2(&pServRClient2);
-    toto = pipe_format(&pServRClient2);
-    printf( "  %s \n", toto);
-    free(toto);
+    char serveur[TAILLE_MAX][50];  //liste des serveur  
+    int nb_serv =0; //NOMBRE DE SERVEUR
+
+    //ouverture du fichier liste des serveur
+    FILE *ListeServ = fopen("/workspaces/Projet-EL-3032/Base de donnée/liste des serveurs.txt", "r");
+    
+    //remplissage de la liste des serveur
+    while (fscanf(ListeServ, "%s", serveur[nb_serv]) != EOF) {
+        nb_serv++;
+        if (nb_serv >= MAX_MOTS) {
+            printf("Trop de mots dans le fichier.\n");
+            break;
+        }
+    }
+    printf("Nombre de serveur : %d\n", nb_serv);
+
 
     
+    Pipe PipeSD[nb_serv];
+    //Création des pipes serveurs, en fonction des serveurs du fichier : la liste des serveur
+    for (int i = 0; i < nb_serv; i++){
+        
+        char nomPipe[50]= "PipeSD";
+        strcat(nomPipe, serveur[i]);
+        strcat(nomPipe, ".pipe");
+
+        pipe_init(&PipeSD[i+1], "servRD.pipe", nomPipe);
+            char *toto = pipe_format(&PipeSD[i+1]);
+            printf( "  %s \n", toto);
+            free(toto);
+        
+    }
+    printf("  name_in : %s\n", PipeSD[2].name_out);
+
+
+
+
+
+
+    /////////////////// INITIALISATION DES PIPES CLIENT /////////////////
+    
+    int nb_client = atoi(argv[1]);
+    
+    printf("Nombre de client : %d\n", nb_client);
+    
+    Pipe PipeC[nb_client];
+    
+    // création des pipes clients en fonction de l'argument passé en paramètre
+    for (int i = 0; i < nb_client; i++){
+
+        //char numCLient [TAILLE_MAX] = "";
+        //sprintf(numCLient, "%d", i);
+        
+        
+        char NomPipeC[30];
+        //strcat(nomPipeC, numCLient);
+        sprintf(NomPipeC, "PipeClient%d.pipe", i+1);
+
+        pipe_init(&PipeC[i],"servRC.pipe" , NomPipeC);
+        char *toto = pipe_format(&PipeC[i]);
+        printf( " %s \n", toto);
+        free(toto);
+
+    }
+    
+    printf("  name_in : %s\n", PipeC[0].name_out);
+
+
     int result = 0;
-    int resultServD = 0;
-    
-    
+    int resultsd = 0;
+
+    char TableRoutage[50][BUFFER_SIZE];
+    char Commande [30];
+
+
+
+
+
+
+    /////////////////// BOUCLE SUR LES PIPES /////////////////////
+
+
     //changement de methode pour la table de routage, lécture de tout puis des if si infos lu )
     while(1){
 
-        result = pipe_read(&pServRClient1, buffer, BUFFER_SIZE);
-        if(result == 0){
-            result = pipe_read(&pServRClient2, buffer, BUFFER_SIZE);
-        }
-        resultServD = pipe_read(&pServRD1, bufferSD, BUFFER_SIZE);
-        if (resultServD == 0){
-            resultServD = pipe_read(&pServRD2, bufferSD, BUFFER_SIZE);
-        }
-
-
-        if (result != 0){ 
-            char Serveur[BUFFER_SIZE] = "";
-            for (int i = 2; i < 6; i++) {
-                char temp[2] = {buffer[i], '\0'};
-                strcat(Serveur, temp);
-            }
-
+       
+        for (int i =0; i<nb_client; i++){
+            result = pipe_read(&PipeC[i], buffer, BUFFER_SIZE);
             
-            if (strcmp(Serveur, "1111") == 0){
-                printf ("Data read (%d bytes): %s\n", result, buffer);
-                pipe_open_write(&pServRD1);
-                printf ("Data sent to server 1111 \n");
-                pipe_write(&pServRD1, buffer);
-            }
 
-            else if (strcmp(Serveur, "2222") == 0){
-                printf ("Data read (%d bytes): %s\n", result, buffer); 
-                pipe_open_write(&pServRD2);
-                printf ("Data sent to server 2222 \n");
-                pipe_write(&pServRD2,buffer);
-            }
 
-            else{  
-                buffer[0]='E';
-                printf ("%s : serveur inconnu\n", Serveur);
-                char chaine1 = strcat(buffer,"|Serveur Inconnu|");
+            /////  Message d'un client reçu  //////
+            if(result !=0){ 
+
+
+                /// on le place das la table de routage : tableau à double dimension ///
+                for (int i = 0; i < 50; i++) { //on parcours la table
+                    
+                    //dés qu'un élément est vide on place le message
+                    if (TableRoutage[i][0] == '\0'){ 
+                        
+                        // on insere buffer dans la table jusqu'à ce que buffer[k] soit vide
+                        for (int j = 0; j < strlen(buffer); j++) { 
+                                for (int k = 2; buffer[k] !=0; k++, j++) {
+                                    TableRoutage[i][j] = buffer[k];
+                                    Commande [j] = buffer[k];
+                                }     
+                        }
+                    Commande[14]= '\0';
+                    Commande[15]= '\0';
+                    Commande[16]= '\0';
+
+                    break;// Terminer la boucle après avoir inséré le tableau 
+                    }
+                }//remplissage table routage
                 
-                pipe_write(&pServRClient1,chaine1);
-                pipe_write(&pServRClient2,chaine1);
-            }
-            result = 0;
-        }
-        
-        if (resultServD !=0){
-            char Client = bufferSD[1];
-            char Menu[BUFFER_SIZE] = "";
 
-            if(Client == '1'){
-                printf("Il s'agit du Client 1 \n");
-                pipe_write(&pServRClient1, bufferSD);
-            }
+                // on afficher la table de routage
+                for (int i = 0; i < BUFFER_SIZE && TableRoutage[i][0] != '\0'; i++) {
 
-            else if(Client == '2'){
-                printf("Il s'agit du Client 2\n");
-                pipe_write(&pServRClient2, bufferSD);
-            }
-            else{
-                printf("Client Inconnu\n");
-            }
+                    for (int j = 0; j < BUFFER_SIZE && TableRoutage[i][j] != '\0'; j++) {
+                        printf("%c", TableRoutage[i][j]);
+                    }
+                    printf("\n");
+                }
 
+                printf("%s\n", Commande);
+                
+                //isoler le code serveur
+                char Serveur[BUFFER_SIZE] = "";    
+                for (int i = 0; i < 4; i++) {
+                    char temp[2] = {Commande[i], '\0'};
+                    strcat(Serveur, temp);
+                }
+
+                //initialisation de la variable qui identifie le serveur
+                int m=0;
+                int serv = 0;
+                while (serv < nb_serv){
+                    if (strcmp(serveur[serv], Serveur) == 0 ){              
+                        pipe_write(&PipeSD[serv+1], Commande);
+                        m=1;
+                    }
+                    serv++;
+                }
+
+                if (m==0){
+                    printf("serveur introuvable");
+                }
+
+
+            }//// Fin message client reçu ////
+                    
+        } /// Fin Boucle lecture pipe client ///
+
+
+
+
+        //////// LECTURE SERVEUR DE DONNÉE ///////
+
+        for (int i = 1; i<= nb_serv; i++){
+            resultsd = pipe_read(&PipeSD[i], buffersd, BUFFER_SIZE);
+
+            /////  Message d'un serveur de donnée  //////
+            if(resultsd !=0){ 
+
+                
+                //on retire de la table de routage la commande 
+                for (int i = 0; i < 50; i++) {
+                    if (strncmp(buffersd+2, TableRoutage[i], 14) == 0) {
+
+                        // Si les chaînes sont égales, on afficher le numéro client et supprimer la chaîne du tableau
+                        printf("La chaîne %s \n", buffersd+2);
+
+                        char NumClient = TableRoutage[i][15]; // Récupération du numéro client à l'indice k+1
+                        printf("%c\n", NumClient);
+
+                        // Supprimer la chaîne du tableau
+                        for (int j = i; j <  49; j++) {
+                            for (int k =0; k<= 16; k++){
+                                TableRoutage[j][k]= TableRoutage[j+1][k];
+                            }
+                        }
+                        printf("%s yes\n", TableRoutage[i]);
+                        
+
+                        int NumC = NumClient -'0';
+                        printf("%d\n", NumC);
+
+                        pipe_write(&PipeC[NumC-1], buffersd);
+                        
+                    }
+                }
+
+                
+            }
         }
     }
-    
+        
 }
-
-
-
 
     
     

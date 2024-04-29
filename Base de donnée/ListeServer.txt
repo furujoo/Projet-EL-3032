@@ -1,2 +1,0 @@
-"Serveur A" 1234
-"Serveur B" 5678

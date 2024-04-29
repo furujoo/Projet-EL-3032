@@ -20,7 +20,7 @@ void Pipe1111(Pipe *pipe){
 }
 
 void Pipe2222(Pipe *pipe){
-    pipe_init(pipe,"PipeSD5555.pipe" , "servRD.pipe" );
+    pipe_init(pipe,"PipeSD2222.pipe" , "servRD.pipe" );
 }
 
 
@@ -56,20 +56,18 @@ int main(int argc, char *argv[]){
     bool ErreurLieu = false;
     bool ErreurMenu = false;
 
-    
-    Pipe1111(&pServD1R);
-        char *toto = pipe_format(&pServD1R);
-        printf( "  %s \n", toto);
-        free(toto);
 
 
-    Pipe2222(&pServD2R);
-        toto = pipe_format(&pServD2R);
-        printf( "  %s \n", toto);
-        free(toto);
+  
 
     ////////////////////////////////////////Serveur 1111///////////////////////////////////////////////////////
     if (atoi(NumServ)==1111){
+
+        // Création du pipe serveur 1111
+        Pipe1111(&pServD1R);
+        char *toto = pipe_format(&pServD1R);
+        printf( "  %s \n", toto);
+        free(toto);
 
         printf("Serveur 1111 \n");
 
@@ -96,6 +94,10 @@ int main(int argc, char *argv[]){
 
     else if (atoi(NumServ)==2222){
 
+        Pipe2222(&pServD2R);
+        char* toto = pipe_format(&pServD2R);
+        printf( "  %s \n", toto);
+        free(toto);
 
         printf("Serveur 2222 \n");
 
@@ -138,7 +140,7 @@ int main(int argc, char *argv[]){
 
    
 
-    int elements_lus = sscanf(buffer, "%c|%d|%d|%d|%c", &typeR,&CodeServ, &CodeLieux, &CodeMenu,&NumClient); ////Parsing du message reçu par le serveur de Routage
+    int elements_lus = sscanf(buffer, "%d|%d|%d", &CodeServ, &CodeLieux, &CodeMenu); ////Parsing du message reçu par le serveur de Routage
 
     if((CodeServ != 1111) & (CodeServ != 2222)){  
         Erreur = true;   /////On verifie si les codes serveur du Client sont bon 
@@ -198,15 +200,21 @@ int main(int argc, char *argv[]){
        
         if(ErreurMenu == false){
             char Reponse[200]="";
-            snprintf(Reponse, 300, "|%c|R|%d|%d|%d|%s|", NumClient,CodeServ,CodeLieux,CodeMenu,Commande );  ///Envoie de la reponse au Client suivant le format du protocole de communication
+            snprintf(Reponse, 300, "R|%d|%d|%d|%s|",CodeServ,CodeLieux,CodeMenu,Commande );  ///Envoie de la reponse au Client suivant le format du protocole de communication
             printf("La Répônse Envoyée : %s \n", Reponse);
-            pipe_write(&pServD1R, Reponse); 
 
+            //envoie du message
+            if (atoi(NumServ)==1111){
+                pipe_write(&pServD1R, Reponse); 
+            }
+            else if(atoi(NumServ)==2222){
+                pipe_write(&pServD2R, Reponse); 
+            }
         }
 
         else if(ErreurMenu == true) {
             char ErreurMenu[200]="";
-            snprintf(ErreurMenu, 300, "|%c|R|%d|%d|%d|Le Code du Menu est incorrect|", NumClient,CodeServ,CodeLieux,CodeMenu );  ///Envoie de la reponse au Client suivant le format du protocole de communication
+            snprintf(ErreurMenu, 300, "R|%d|%d|%d|Le Code du Menu est incorrect|",CodeServ,CodeLieux,CodeMenu );  ///Envoie de la reponse au Client suivant le format du protocole de communication
             printf("La Répônse Envoyée : %s \n", ErreurMenu);
             pipe_write(&pServD1R, ErreurMenu); 
 
@@ -225,7 +233,7 @@ int main(int argc, char *argv[]){
 
 
         if(ErreurServ == true){
-            snprintf(MessageErreurServ, 300, "|%c|R|%d|%d|%d|Code Serv Inconnu|", NumClient,CodeServ,CodeLieux,CodeMenu );
+            snprintf(MessageErreurServ, 300, "R|%d|%d|%d|Code Serv Inconnu|",CodeServ,CodeLieux,CodeMenu );
             printf("Le code Serveur est inconnu");
             if (atoi(NumServ)==1111){
                 pipe_write(&pServD1R, MessageErreurServ);
@@ -238,7 +246,7 @@ int main(int argc, char *argv[]){
 
 
         if(ErreurLieu == true){ //Si on a une erreur sur le code Lieu envoyé par le client, on le signale
-            snprintf(MessageErreur, 300, "|%c|R|%d|%d|%d|Code Lieu Inconnu|", NumClient,CodeServ,CodeLieux,CodeMenu );
+            snprintf(MessageErreur, 300, "R|%d|%d|%d|Code Lieu Inconnu|",CodeServ,CodeLieux,CodeMenu );
             printf("L'Erreur est': %s \n", MessageErreur);
             if (atoi(NumServ)==1111){
                 pipe_write(&pServD1R, MessageErreur);

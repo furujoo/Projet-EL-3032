@@ -10,15 +10,18 @@ Serveur Routage :
 
 - fichier d'excution avec la liste des serveurs 
 - le code cherche dans la liste chaque serveur et créer les pipes corespondnat ( attention à avoir les même ,nom que dans servd)
-
 - Nombre de client max en argumentt -> créer un pipe pour chaque entrée possible 
 
-- Syntaxe change : on garde la whule(1) + on ajoute des boucle for ( avec le nombre exact) pour les pipe client et donnée 
+
+- Syntaxe change : on garde la while(1) + on ajoute des boucle for ( avec le nombre exact) pour les pipe client et donnée 
 - dans chaque boucle si on recoit on execute directement l'envoi de la donnée
 
 - tenter table de routage : 
 on met dans une table la requete cllient + l'id clieeent
 puis, quand on recoit la requete du serveur de donnée on compare avec la table, si c'est égale pour un des indice, on check l'id client de cette case puis on envoie au pipe client correspondnat
 
+- si serveur intoruvable envoyer au client erreur
+
 CLIENT
 
+lorsqu'un client se créer il prend un creneau de pipe si ils n'est pas dispo alors message d'erreur

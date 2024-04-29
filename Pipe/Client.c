@@ -73,6 +73,7 @@ int main(int argc, char *argv[]){
         while(result==0){     ////////Tant que l'application Cliente ne lis rien sur les Pipe, on continue de boucler sur le pipe_read
             if(atoi(NumClient)==1){
                 result = pipe_read(&pClient1ServR, buffer, BUFFER_SIZE);
+                
             }
             else if(atoi(NumClient)==2){
                 result = pipe_read(&pClient2ServR, buffer, BUFFER_SIZE);
