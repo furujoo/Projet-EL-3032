@@ -12,11 +12,11 @@
 
 
 void PipeClient1ServR(Pipe *pipe){
-    pipe_init(pipe,"client1.pipe", "servR.pipe" );  
+    pipe_init(pipe,"PipeClient1.pipe", "servRC.pipe" );  
 }
 
 void PipeClient2ServR(Pipe *pipe){
-    pipe_init(pipe,"client2.pipe", "servR.pipe" ); 
+    pipe_init(pipe,"PipeClient2.pipe", "servRC.pipe" ); 
 }
 
 

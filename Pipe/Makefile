@@ -18,8 +18,6 @@ Client : log.o pipe.o Client.c
 ServD : log.o pipe.o Serv.c 
 	$(CCFLAGS) -o $@ $^ -lm
 
-#pipes: $(OBJ_PIPES)
-#	$(CCFLAGS) -o $@ $^
 
 %.o: %.c
 	$(CCFLAGS) -o $@ -c $<

@@ -16,11 +16,11 @@
 //Fonctions qui initialisent des Pipes
 
 void Pipe1111(Pipe *pipe){
-    pipe_init(pipe,"servD1.pipe" , "servR1.pipe" );
+    pipe_init(pipe,"PipeSD1111.pipe" , "servRD.pipe" );
 }
 
 void Pipe2222(Pipe *pipe){
-    pipe_init(pipe,"servD2.pipe" , "servR1.pipe" );
+    pipe_init(pipe,"PipeSD5555.pipe" , "servRD.pipe" );
 }
 
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
     Pipe pServD1R, pServD2R;
     
     char buffer[BUFFER_SIZE]="";
-    char chaine[TAILLE_MAX]="";
+    char chaine[]="";
 
     char mots[TAILLE_MAX][50];
     int nb_mots = 0;
@@ -95,8 +95,13 @@ int main(int argc, char *argv[]){
 ////////////////////////////////////////    Serveur 2222    ///////////////////////////////////////////////////////
 
     else if (atoi(NumServ)==2222){
-       printf("Serveur 2222 \n");
-        while(result2==0){  //////Lecture en boucle sur le pipe entre le serveur de Routage
+
+
+        printf("Serveur 2222 \n");
+
+
+
+        while(result2==0){
             result2 = pipe_read(&pServD2R, buffer, BUFFER_SIZE);
         }
         
